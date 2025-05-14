@@ -1,4 +1,6 @@
 const express = require("express");
+const dbConnect = require("./config/db");
+
 const cors = require("cors");
 const {
   ListObjectsV2Command,
@@ -18,6 +20,8 @@ app.use(
   })
 );
 
+dbConnect(process.env.MongoURI);
+
 app.get("/", (req, res) => {
   res.status(200).json({ msg: "ok" });
 });
@@ -28,7 +32,6 @@ const getData = async () => {
     Key: "1-Introduction-CN.pdf",
   };
 
-  // async/await
   try {
     const data = await s3Client.send(new ListObjectsV2Command(params));
     const files = data.Contents.map((file) => file.Key);
@@ -47,8 +50,6 @@ const getData = async () => {
   const command = new GetObjectCommand(params);
   getSignedUrl(s3Client, command).then((url) => console.log(url));
 };
-
-getData();
 
 app.listen(4000, () => {
   console.log("server listening on port 4000");
