@@ -1,5 +1,5 @@
 const express = require("express");
-const dbConnect = require("./config/db");
+const bodyParser = require("body-parser");
 
 const cors = require("cors");
 const {
@@ -8,8 +8,14 @@ const {
 } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
+const multer = require("multer");
+
+const upload = multer({ dest: "uploads/" });
+
 require("dotenv").config();
+
 const s3Client = require("./utils/s3");
+const dbConnect = require("./config/db");
 
 const app = express();
 
@@ -20,36 +26,29 @@ app.use(
   })
 );
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+
 dbConnect(process.env.MongoURI);
+
+const userModel = require("./models/user");
 
 app.get("/", (req, res) => {
   res.status(200).json({ msg: "ok" });
 });
 
-const getData = async () => {
-  const params = {
-    Bucket: process.env.LIARA_BUCKET_NAME,
-    Key: "1-Introduction-CN.pdf",
-  };
+app.post("/api/user/add", async (req, res) => {
+  console.log(req.body);
 
-  try {
-    const data = await s3Client.send(new ListObjectsV2Command(params));
-    const files = data.Contents.map((file) => file.Key);
-    console.log(files);
-  } catch (error) {
-    console.log(error);
-  }
+  const newUser = await userModel.create(req.body);
+  console.log(newUser);
 
-  try {
-    const data = await s3Client.send(new GetObjectCommand(params));
-    console.log(data.Body.toString());
-  } catch (error) {
-    console.log(error);
-  }
+  res.status(200).json({ msg: "adding new user", newUser });
+});
 
-  const command = new GetObjectCommand(params);
-  getSignedUrl(s3Client, command).then((url) => console.log(url));
-};
+app.post("/upload", upload.single("avatar"), (req, res) => {
+  res.status(200).json({ msg: "upload thing" });
+});
 
 app.listen(4000, () => {
   console.log("server listening on port 4000");
