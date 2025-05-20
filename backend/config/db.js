@@ -1,13 +1,22 @@
 const mongoose = require("mongoose");
 
-const dbConnect = async (MongoURI) => {
+const connectDB = async (MongoURI) => {
   try {
-    await mongoose.connect(MongoURI);
-    console.log("db connected");
+    const mongoConnection = await mongoose.connect(MongoURI);
+
+    const { connection: connectionInfo } = mongoConnection;
+
+    console.log(
+      "✅ MongoDB connected. Connection details: \n",
+      `=> host:${connectionInfo.host}:${connectionInfo.port} \n => DB_name:${connectionInfo.name}`
+    );
+
+    return { isSuccess: true };
   } catch (error) {
     console.log(error);
-    process.exit();
+
+    return { isSuccess: false };
   }
 };
 
-module.exports = dbConnect;
+module.exports = connectDB;
