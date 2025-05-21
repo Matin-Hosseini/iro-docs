@@ -23,10 +23,7 @@ const DocumentSchema = new Schema(
       default: null,
       trim: true,
     },
-    fileUrl: {
-      type: String,
-      required: true,
-    },
+
     fileKey: {
       type: String,
       required: true,

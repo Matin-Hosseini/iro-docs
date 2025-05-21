@@ -22,7 +22,7 @@ const UserSchema = new Schema(
     age: {
       type: Number,
       default: 18,
-      required: true
+      required: true,
     },
     email: {
       type: String,
