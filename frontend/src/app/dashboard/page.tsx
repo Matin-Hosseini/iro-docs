@@ -7,18 +7,20 @@ export default async function DashboardPage() {
 
   const token = cookiestore.get("auth_token")?.value || null;
 
-  const res = await api.get("/auth/me", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  console.log(res.data);
+  try {
+    const res = await api.get("/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.log(error.response.data);
+  }
 
   return (
     <div>
       <h1>این صفحه داشبورد است</h1>
-      {res.data.user.firstName}
+
       <UserInformationForm />
     </div>
   );

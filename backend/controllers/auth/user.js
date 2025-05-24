@@ -4,10 +4,6 @@ const UserModel = require("./../../models/user");
 const jwt = require("jsonwebtoken");
 
 const sendOtp = async (req, res) => {
-  console.log("sending request");
-
-  console.log(req.headers["x-api-key"]);
-
   const code = Math.floor(10000 + Math.random() * 900000);
 
   const otp = {

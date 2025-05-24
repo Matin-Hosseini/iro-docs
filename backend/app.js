@@ -9,6 +9,7 @@ require("dotenv").config();
 
 const app = express();
 const apiRoutes = require("./routes/index");
+const apiKeyMiddleWare = require("./middlewares/apiKeyMiddleware");
 
 app.use(
   cors({
@@ -30,7 +31,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
-app.use("/api/v1", apiRoutes);
+app.use("/api/v1", apiKeyMiddleWare, apiRoutes);
 
 app.get("/", (req, res) => {
   console.log(req.body);
