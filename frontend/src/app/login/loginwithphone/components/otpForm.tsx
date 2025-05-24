@@ -6,8 +6,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpSchema } from "@/validation/schemas/login";
 import { otpDTO } from "@/types/login/login";
+import { optAction } from "@/actions/login";
 
-export default function OtpForm() {
+export default function OtpForm({
+  mobileNo,
+  request_id,
+}: {
+  mobileNo: string;
+  request_id: string;
+}) {
   const {
     register,
     handleSubmit,
@@ -16,7 +23,9 @@ export default function OtpForm() {
     resolver: zodResolver(otpSchema),
   });
 
-  const otpSubmitHandler = (data: otpDTO) => {};
+  const otpSubmitHandler = async (data: otpDTO) => {
+    const result = await optAction(data, mobileNo, request_id);
+  };
 
   return (
     <form onSubmit={handleSubmit(otpSubmitHandler)}>

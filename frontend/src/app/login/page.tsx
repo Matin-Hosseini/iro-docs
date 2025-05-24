@@ -4,7 +4,7 @@ import { loginDTO } from "@/types/login/login";
 import { loginSchema } from "@/validation/schemas/login";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, TextField } from "@mui/material";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export default function LoginPage() {

@@ -27,9 +27,12 @@ export default async function LoginWithPhonePage({
             سامانه جامع ایران اورجینال
           </Typography>
           <Typography component={"h3"}>
-            کد ارسال شده به شماره {searchParameters.mobileNo} را وارد کنید.{" "}
+            کد ارسال شده به شماره {result.data.mobileNo} را وارد کنید.{" "}
           </Typography>
-          <OtpForm />
+          <OtpForm
+            mobileNo={result.data.mobileNo}
+            request_id={result.data.request_id}
+          />
         </div>
       </div>
     </div>

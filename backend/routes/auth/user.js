@@ -1,8 +1,9 @@
 const express = require("express");
-const { login } = require("../../controllers/auth/user");
+const { sendOtp, checkOtp } = require("../../controllers/auth/user");
 
 const router = express.Router();
 
-router.post("/login", login);
+router.post("/otp", sendOtp);
+router.post("/otp/validate", checkOtp);
 
 module.exports = router;
