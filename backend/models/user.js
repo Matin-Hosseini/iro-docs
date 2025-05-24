@@ -19,16 +19,25 @@ const UserSchema = new Schema(
       default: null,
       trim: true,
     },
-    age: {
-      type: Number,
-      default: 18,
-      required: true,
+    birth_date: {
+      type: Date,
+      default: null,
+      trim: true,
     },
-    email: {
+    national_id: {
       type: String,
       default: null,
       trim: true,
-      lowercase: true,
+    },
+    fathers_name: {
+      type: String,
+      default: null,
+      trim: true,
+    },
+    grade_score: {
+      type: String,
+      default: null,
+      enum: ["A", "B", "C", "D", "E"],
     },
     status: {
       type: String,

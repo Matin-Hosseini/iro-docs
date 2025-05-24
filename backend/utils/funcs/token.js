@@ -12,4 +12,14 @@ const generateToken = (payload) => {
   return token;
 };
 
-module.exports = generateToken;
+const validateToken = async (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWTSECRET);
+
+    return { isValid: true, decoded };
+  } catch (error) {
+    return { isValid: false };
+  }
+};
+
+module.exports = { generateToken, validateToken };

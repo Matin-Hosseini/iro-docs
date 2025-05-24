@@ -4,24 +4,16 @@ import { cookies } from "next/headers";
 
 import { loginDTO } from "@/types/login/login";
 import { loginSchema } from "@/validation/schemas/login";
+import api from "@/lib/axios";
 
 export const loginAction = async (data: loginDTO) => {
   const validation = loginSchema.safeParse(data);
 
-  const res = await fetch(`${process.env.BACKEND_BASE_URL}/auth/otp`, {
-    method: "POST",
-    body: JSON.stringify({
-      phone: validation.data?.phoneNumber,
-    }),
-    headers: {
-      "Content-type": "application/json",
-    },
+  const resData = await api.post("/auth/otp", {
+    phone: validation.data?.phoneNumber,
   });
 
-  const resData = await res.json();
-  console.log(resData);
-
-  const result = { ...resData, isSuccess: true };
+  const result = { ...resData.data, isSuccess: true };
 
   return result;
 };
@@ -31,31 +23,30 @@ export const optAction = async (
   mobileNo: string,
   request_id: string
 ) => {
-  const res = await fetch(`${process.env.BACKEND_BASE_URL}/auth/otp/validate`, {
-    method: "POST",
-    body: JSON.stringify({
+  try {
+    const res = await api.post("/auth/otp/validate", {
       otpCode: formData.code,
       phone: mobileNo,
       reqId: request_id,
-    }),
-    headers: {
-      "Content-type": "application/json",
-    },
-  });
-  const resData = await res.json();
-  console.log(resData);
+    });
 
-  const cookieStore = await cookies();
-  cookieStore.set({
-    name: "auth_token",
-    value: resData.token,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    path: "/",
-    maxAge: 60 * 60 * 24, // 1 روز
-  });
-  const result = { isSuccess: true };
+    const data = res.data;
 
-  return result;
+    const cookieStore = await cookies();
+    cookieStore.set({
+      name: "auth_token",
+      value: data.token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24,
+    });
+
+    return { isSuccess: true, data };
+  } catch (error: any) {
+    console.log(error.response.data);
+
+    return { isSuccess: false, error: error.response.data };
+  }
 };

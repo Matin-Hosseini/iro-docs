@@ -7,6 +7,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { otpSchema } from "@/validation/schemas/login";
 import { otpDTO } from "@/types/login/login";
 import { optAction } from "@/actions/login";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 export default function OtpForm({
   mobileNo,
@@ -25,6 +27,17 @@ export default function OtpForm({
 
   const otpSubmitHandler = async (data: otpDTO) => {
     const result = await optAction(data, mobileNo, request_id);
+
+    if (!result.isSuccess) {
+      toast.error(result.error.msg);
+
+      return;
+    }
+
+    console.log(result);
+
+    toast.success(`خوش آمدید. \n  در حال انتقال به پنل کاربری خود هستید...`);
+    redirect("/dashboard");
   };
 
   return (
