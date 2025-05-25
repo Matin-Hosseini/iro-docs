@@ -1,11 +1,12 @@
 import CalculatorForm from "@/components/CalculatorForm";
+import SectionContainer from "../components/SectionContainer";
 
 export default function Home() {
   return (
     <main>
-      <div className="container mx-auto my-10 px-5">
+      <SectionContainer>
         <CalculatorForm />
-      </div>
+      </SectionContainer>
     </main>
   );
 }

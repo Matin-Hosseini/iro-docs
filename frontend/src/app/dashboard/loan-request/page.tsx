@@ -1,7 +1,7 @@
-import UserInformationForm from "./components/userInfoForm";
-import SectionContainer from "./components/SectionContainer";
 import { getMe } from "@/utils/funcs/me";
 import { redirect } from "next/navigation";
+import SectionContainer from "../components/SectionContainer";
+import UserInformationForm from "../components/userInfoForm";
 
 export default async function DashboardPage() {
   const { isSuccess, userInfo } = await getMe();
