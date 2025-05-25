@@ -1,27 +1,19 @@
-import api from "@/lib/axios";
-import { cookies } from "next/headers";
 import UserInformationForm from "./components/userInfoForm";
+import SectionContainer from "./components/SectionContainer";
+import { getMe } from "@/utils/funcs/me";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const cookiestore = await cookies();
+  const { isSuccess, userInfo } = await getMe();
 
-  const token = cookiestore.get("auth_token")?.value || null;
-
-  try {
-    const res = await api.get("/auth/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  } catch (error) {
-    console.log(error.response.data);
-  }
+  if (!isSuccess) return redirect("/");
 
   return (
     <div>
-      <h1>این صفحه داشبورد است</h1>
-
-      <UserInformationForm />
+      <SectionContainer>
+        <p className="text-2xl mb-3">مشخصات فردی:</p>
+        <UserInformationForm defaultValues={userInfo} />
+      </SectionContainer>
     </div>
   );
 }

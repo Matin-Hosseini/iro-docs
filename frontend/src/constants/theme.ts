@@ -5,7 +5,7 @@ const theme = createTheme({
   cssVariables: true,
   direction: "rtl",
   palette: {
-    mode: "dark",
+    mode: "light",
   },
 
   typography: {

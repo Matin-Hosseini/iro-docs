@@ -1,3 +1,4 @@
+const { sendMessage } = require("../../utils/funcs/message");
 const { generateToken, validateToken } = require("../../utils/funcs/token");
 const OtpModel = require("./../../models/otp");
 const UserModel = require("./../../models/user");
@@ -12,33 +13,21 @@ const sendOtp = async (req, res) => {
     expiresAt: new Date(Date.now() + 2 * 60 * 1000),
   };
 
+  const otpMessageText = `به سامانه جامع ایران اورجینال خوش آمدید. \n کد ورود شما: ${code}`;
+
+  const { isMessageSent } = await sendMessage(req.body.phone, otpMessageText);
+
+  if (!isMessageSent)
+    return res
+      .status(500)
+      .json({ msg: "خطا در برقراری ارتباط با سرویس دهنده" });
+
   const newOtpRecord = await OtpModel.create({
     ...otp,
     expiresAt: new Date(Date.now() + 5 * 60 * 1000),
   });
 
-  const otpMessageText = `به سامانه جامع ایران اورجینال خوش آمدید. \n کد ورود شما: ${code}`;
-
-  // const response = await fetch(
-  //   `${process.env.ASANAK_WEB_SERVICE_URL}/sendsms`,
-  //   {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       username: process.env.ASANAK_USERNAME,
-  //       password: process.env.ASANAK_PASSWORD,
-  //       Source: process.env.ASANAK_SOURSE_NUMBER,
-  //       destination: req.body.phone,
-  //       Message: otpMessageText,
-  //     }),
-  //   }
-  // );
-
-  const otpResponse = { ...otp, request_id: newOtpRecord._id };
-
-  res.status(200).json(otpResponse);
+  res.status(200).json({ ...otp, request_id: newOtpRecord._id });
 };
 
 const checkOtp = async (req, res) => {

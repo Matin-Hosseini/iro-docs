@@ -11,33 +11,43 @@ const UserSchema = new Schema(
     },
     firstName: {
       type: String,
-      default: null,
+      default: "",
       trim: true,
     },
     lastName: {
       type: String,
-      default: null,
+      default: "",
       trim: true,
     },
     birth_date: {
       type: Date,
-      default: null,
+      default: "",
       trim: true,
     },
     national_id: {
       type: String,
-      default: null,
+      default: "",
       trim: true,
     },
     fathers_name: {
       type: String,
-      default: null,
+      default: "",
       trim: true,
     },
     grade_score: {
       type: String,
-      default: null,
+      default: "",
       enum: ["A", "B", "C", "D", "E"],
+    },
+    postal_code: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    address: {
+      type: String,
+      default: "",
+      trim: true,
     },
     status: {
       type: String,
