@@ -1,12 +1,15 @@
 import CalculatorForm from "@/components/CalculatorForm";
 import SectionContainer from "../components/SectionContainer";
+import WithPermission from "@/HOCs/WithPermission";
 
 export default function Home() {
   return (
     <main>
-      <SectionContainer>
-        <CalculatorForm />
-      </SectionContainer>
+      <WithPermission permissions={[""]}>
+        <SectionContainer>
+          <CalculatorForm />
+        </SectionContainer>
+      </WithPermission>
     </main>
   );
 }

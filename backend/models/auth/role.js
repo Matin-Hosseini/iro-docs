@@ -3,11 +3,16 @@ const { Schema } = mongoose;
 
 const RoleSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       unique: true,
-      trime: true,
+      trim: true,
+    },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
     },
     description: {
       type: String,

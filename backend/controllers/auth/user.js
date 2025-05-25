@@ -56,7 +56,7 @@ const checkOtp = async (req, res) => {
 
   const targetUser = await UserModel.findOne({ phone });
   if (targetUser) {
-    const token = generateToken({ phone: targetUser.phone });
+    const token = generateToken({ _id: targetUser._id });
 
     return res.status(200).json({ msg: "ok", user: targetUser, token });
   }
@@ -68,16 +68,7 @@ const checkOtp = async (req, res) => {
 };
 
 const me = async (req, res) => {
-  const authHeader = req.headers["authorization"];
-
-  const token = authHeader.split(" ")[1];
-  if (!token) return res.status(400).json({ msg: "token is required" });
-
-  const validatedToken = await validateToken(token);
-
-  if (!validatedToken) return res.status(400).json({ msg: "token is expired" });
-
-  const user = await UserModel.findOne({ phone: validatedToken.decoded.phone });
+  const user = req.user;
 
   return res.status(200).json({ msg: "ok", user });
 };

@@ -36,7 +36,7 @@ const UserSchema = new Schema(
     },
     grade_score: {
       type: String,
-      default: "",
+      default: "A",
       enum: ["A", "B", "C", "D", "E"],
     },
     postal_code: {
@@ -51,7 +51,7 @@ const UserSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["active", "inactive", "blocked"],
+      enum: ["active", "inactive", "blocked", "waiting"],
       default: "active",
     },
     lastLoginAt: {

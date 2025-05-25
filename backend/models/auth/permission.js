@@ -3,13 +3,13 @@ const { Schema } = mongoose;
 
 const PermissionSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       unique: true,
       allowNull: false,
       trim: true,
     },
-    name: {
+    title: {
       type: String,
       unique: true,
       allowNull: false,

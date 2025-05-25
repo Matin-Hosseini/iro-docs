@@ -6,8 +6,10 @@ const getRoles = async (req, res) => {
   res.status(200).json({ roles });
 };
 
-const addRole = async(req, res) => {
+const addRole = async (req, res) => {
+  // const newRole = await RoleModel.create(req.body);
 
-}
+  return res.status(201).json({ msg: "ok" });
+};
 
-module.exports = { getRoles };
+module.exports = { getRoles, addRole };
