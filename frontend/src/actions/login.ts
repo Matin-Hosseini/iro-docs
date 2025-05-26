@@ -8,14 +8,15 @@ import api from "@/lib/axios";
 
 export const loginAction = async (data: loginDTO) => {
   const validation = loginSchema.safeParse(data);
+  try {
+    const resData = await api.post("/auth/otp", {
+      phone: validation.data?.phoneNumber,
+    });
 
-  const resData = await api.post("/auth/otp", {
-    phone: validation.data?.phoneNumber,
-  });
-
-  const result = { ...resData.data, isSuccess: true };
-
-  return result;
+    return { ...resData.data, isSuccess: true };
+  } catch (error: any) {
+    return { isSuccess: false, error: error.response.data };
+  }
 };
 
 export const optAction = async (

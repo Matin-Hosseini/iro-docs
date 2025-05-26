@@ -20,6 +20,11 @@ import { conditions } from "@/config/data";
 import { z } from "zod";
 import calculate from "@/utils/installment-calculator";
 
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode } from "swiper/modules";
+
+import "swiper/css";
+
 export default function CalculatorForm() {
   const [activeRepaymentID, setActiveRepaymentID] = useState(0);
 
@@ -175,25 +180,37 @@ export default function CalculatorForm() {
         (selectedCondition !== "none" && (
           <div className="mb-2">
             <Typography>بازه پرداخت</Typography>
-            <div className=" items-center justify-start gap-3 overflow-auto">
+            <Swiper
+              modules={[FreeMode]}
+              spaceBetween={5}
+              slidesPerView={"auto"}
+              onSlideChange={() => console.log("slide change")}
+              onSwiper={(swiper) => console.log(swiper)}
+              freeMode={true}
+              grabCursor={true} // حالت دست برای تجربه کاربری بهتر
+            >
               {conditions[selectedCondition].map((item: any, index: number) => {
                 return (
-                  <Button
-                    sx={{
-                      padding: "0.4rem 1rem",
-                      whiteSpace: "nowrap",
-                    }}
-                    key={item.id}
-                    variant={
-                      activeRepaymentID === index ? "contained" : "outlined"
-                    }
-                    onClick={() => setActiveRepaymentID(index)}
-                  >
-                    {item.repayment} ماهه {item.desc ? `(${item.desc})` : ""}
-                  </Button>
+                  <>
+                    <SwiperSlide style={{ width: "auto" }} key={item.id}>
+                      <Button
+                        sx={{
+                          height: "45px",
+                          whiteSpace: "nowrap",
+                        }}
+                        variant={
+                          activeRepaymentID === index ? "contained" : "outlined"
+                        }
+                        onClick={() => setActiveRepaymentID(index)}
+                      >
+                        {item.repayment} ماهه{" "}
+                        {item.desc ? `(${item.desc})` : ""}
+                      </Button>
+                    </SwiperSlide>
+                  </>
                 );
               })}
-            </div>
+            </Swiper>
           </div>
         ))}
 

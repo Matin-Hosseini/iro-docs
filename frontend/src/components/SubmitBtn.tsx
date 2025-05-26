@@ -1,5 +1,6 @@
 import Button, { ButtonProps } from "@mui/material/Button";
 import ThreeDotsLoading from "./loadings/ThreeDots";
+import { blue } from "@mui/material/colors";
 
 interface SubmitBtnProps extends ButtonProps {
   isSubmitting?: boolean;
@@ -24,9 +25,12 @@ export default function SubmitBtn({
       disabled={isSubmitting || disabled}
       variant={variant}
       fullWidth={fullWidth}
-      className={`h-12 flex items-center justify-center ${
-        backGround || "bg-gray-500 disabled:text-gray-200 disabled:opacity-70"
-      } ${className || ""}`}
+      sx={{
+        height: 50,
+        "&:disabled": {
+          background: blue[700],
+        },
+      }}
     >
       {isSubmitting ? <ThreeDotsLoading color="#fff" /> : children}
     </Button>

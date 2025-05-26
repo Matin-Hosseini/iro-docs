@@ -1,5 +1,6 @@
 "use client";
 import { loginAction } from "@/actions/login";
+import SubmitBtn from "@/components/SubmitBtn";
 import { loginDTO } from "@/types/login/login";
 import { loginSchema } from "@/validation/schemas/login";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +23,11 @@ export default function LoginPage() {
   const loginSubmitHandler = async (data: loginDTO) => {
     const reqResult = await loginAction(data);
 
-    if (!reqResult.isSuccess) return;
+    if (!reqResult.isSuccess) {
+      toast.error(reqResult.error.msg);
+      return;
+    }
+
     toast.success("کد ورود با موفقیت ارسال شد.");
 
     const params = new URLSearchParams({
@@ -54,14 +59,15 @@ export default function LoginPage() {
             {...register("phoneNumber")}
             helperText={!!errors.phoneNumber && errors.phoneNumber.message}
           />
-          <Button
+
+          <SubmitBtn
+            isSubmitting={isSubmitting}
             variant="contained"
             fullWidth
             sx={{ padding: "0.7rem 0" }}
-            type="submit"
           >
-            {isSubmitting ? "..." : "ورود"}
-          </Button>
+            ورود
+          </SubmitBtn>
         </form>
       </div>
     </div>
