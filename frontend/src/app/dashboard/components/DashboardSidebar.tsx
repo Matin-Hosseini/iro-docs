@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import Link from "next/link";
 import NavLink from "./NavLink";
 
 export default function DashboardSidebar() {
