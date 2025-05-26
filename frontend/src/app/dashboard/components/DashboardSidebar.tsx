@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import Logout from "./Logout";
 import NavLink from "./NavLink";
 
 export default function DashboardSidebar() {
@@ -8,6 +8,9 @@ export default function DashboardSidebar() {
         <div>
           <ul className="pt-5">
             <li className="mb-3">
+              <NavLink href="/dashboard">پنل کاربری</NavLink>
+            </li>
+            <li className="mb-3">
               <NavLink href="/dashboard/calculator">محاسبه گر اقساط</NavLink>
             </li>
             <li>
@@ -16,9 +19,7 @@ export default function DashboardSidebar() {
           </ul>
         </div>
         <div>
-          <Button variant="outlined" color="error" fullWidth>
-            خروج از حساب کاربری
-          </Button>
+          <Logout />
         </div>
       </div>
     </aside>

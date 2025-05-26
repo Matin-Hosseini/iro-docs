@@ -37,7 +37,7 @@ export default function OtpForm({
     console.log(result);
 
     toast.success(`خوش آمدید. \n  در حال انتقال به پنل کاربری خود هستید...`);
-    redirect("/dashboard/calculator");
+    redirect("/dashboard");
   };
 
   return (
