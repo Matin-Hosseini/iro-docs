@@ -9,7 +9,7 @@ const calculate = (
   conditionName: string,
   repaymentInfo: any,
   { price, prePayment }: { price: number; prePayment: number }
-) => {
+): any => {
   const targetCondition = conditions[conditionName];
 
   if (!targetCondition) {
@@ -23,9 +23,14 @@ const calculate = (
       const priceAfterIncrease =
         price + (price * repaymentInfo.initialIncrement) / 100;
 
-      const minPrePayment = (priceAfterIncrease * repaymentInfo) / 100;
-
       const priceAfterPrePayment = priceAfterIncrease - prePayment;
+
+      const minPrePayment =
+        (priceAfterIncrease * repaymentInfo.minPrePaymentPercent) / 100;
+
+      if (prePayment < minPrePayment) {
+        return { success: false, minPrePayment };
+      }
 
       const loanPrice =
         priceAfterPrePayment +
@@ -45,14 +50,15 @@ const calculate = (
       );
 
       const data = {
+        success: true,
+        minPrePayment,
+        ...repaymentInfo,
         loanPrice,
         monthlyPayment,
         guaranteePrice,
         guaranteeCheckDate,
         companyCheckDate,
       };
-
-      console.log(data);
 
       return data;
     }
@@ -61,6 +67,13 @@ const calculate = (
         price + (price * repaymentInfo.initialIncrement) / 100;
 
       const priceAfterPrePayment = priceAfterIncrease - prePayment;
+
+      const minPrePayment =
+        (priceAfterIncrease * repaymentInfo.minPrePaymentPercent) / 100;
+
+      if (prePayment < minPrePayment) {
+        return { success: false, minPrePayment };
+      }
 
       const loanPrice =
         priceAfterPrePayment +
@@ -82,7 +95,10 @@ const calculate = (
       );
 
       const data = {
+        success: true,
         loanPrice,
+        ...repaymentInfo,
+        minPrePayment,
         monthlyPayment,
         guaranteePrice,
         companyCheckDate,
@@ -95,6 +111,13 @@ const calculate = (
         repaymentInfo.repayment * repaymentInfo.increasePercent;
 
       const priceAfterIncrease = price + (price * increasePercent) / 100;
+
+      const minPrePayment =
+        (priceAfterIncrease * repaymentInfo.minPrePaymentPercent) / 100;
+
+      if (prePayment < minPrePayment) {
+        return { success: false, minPrePayment };
+      }
 
       const priceAfterPrepayment = priceAfterIncrease - prePayment;
 
@@ -141,6 +164,9 @@ const calculate = (
       );
 
       const data = {
+        success: true,
+        minPrePayment,
+        ...repaymentInfo,
         installmentChecks,
         guaranteeCheckPrice,
         guaranteeCheckDate,

@@ -22,11 +22,17 @@ import calculate from "@/utils/installment-calculator";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
+import Alert from "@mui/material/Alert";
+import { blue } from "@mui/material/colors";
 
 import "swiper/css";
+import InstallMentInfo from "./InstallMentInfo";
 
 export default function CalculatorForm() {
   const [activeRepaymentID, setActiveRepaymentID] = useState(0);
+  const [minPrePaymentError, setMinPrePaymentError] = useState<any>(null);
+
+  const [installmentsInfo, setInstallmentsInfo] = useState<any>(null);
 
   const formSchema = z.object({
     price: z.string().min(1, "لطفا قیمت کالا را وارد کنید."),
@@ -50,17 +56,39 @@ export default function CalculatorForm() {
     },
   });
 
-  const submitHandler = (e: any) => {
-    // console.log(conditions[selectedCondition][activeRepaymentID]);
+  const submitHandler = (data: any) => {
+    const price = +data.price.trim().split(",").join("");
+    const prePayment = +data.prePayment.trim().split(",").join("");
 
-    calculate(
+    if (prePayment >= price) {
+      setMinPrePaymentError({
+        text: "پیش پرداخت نمی تواند بیشتر یا برابر مبلغ کالا باشد.",
+      });
+      return;
+    }
+
+    const calculatedData = calculate(
       selectedCondition,
       conditions[selectedCondition][activeRepaymentID],
       {
-        price: +price.trim().split(",").join(""),
-        prePayment: +prePayment.trim().split(",").join(""),
+        price,
+        prePayment,
       }
     );
+
+    if (!calculatedData.success) {
+      setMinPrePaymentError({
+        minPrePayment: calculatedData.minPrePayment,
+        text: ` با توجه به شرایط انتخابی شما حداقل پیش پرداخت ${Math.ceil(
+          calculatedData.minPrePayment
+        ).toLocaleString()} تومان می باشد.`,
+      });
+      return;
+    }
+
+    setMinPrePaymentError(null);
+
+    setInstallmentsInfo({ condition: selectedCondition, ...calculatedData });
   };
 
   const price = watch("price");
@@ -79,11 +107,13 @@ export default function CalculatorForm() {
     return numberedValue.toLocaleString();
   };
 
+  //number formatter on change for price number
   useEffect(() => {
     const formattedNumber = formatNumber(price);
     setValue("price", formattedNumber);
   }, [price, setValue]);
 
+  //number formatter on change for prePayment number
   useEffect(() => {
     const formattedNumber = formatNumber(prePayment);
     setValue("prePayment", formattedNumber);
@@ -93,135 +123,208 @@ export default function CalculatorForm() {
     setActiveRepaymentID(0);
   }, [selectedCondition]);
 
-  // useEffect(() => {
-  //   if (!selectedCondition) return;
+  useEffect(() => {
+    if (!selectedCondition) return;
 
-  //   console.log(conditions[selectedCondition][activeRepaymentID]);
-  // }, [activeRepaymentID, selectedCondition]);
+    const NumberedPrice = +price.trim().split(",").join("");
+    const NumberedPrePayment = +prePayment.trim().split(",").join("");
+
+    if (NumberedPrice === 0) {
+      setMinPrePaymentError(null);
+      return;
+    }
+
+    if (NumberedPrePayment >= NumberedPrice) {
+      setMinPrePaymentError({
+        text: "پیش پرداخت نمی تواند بیشتر یا برابر مبلغ کالا باشد.",
+      });
+      return;
+    }
+
+    const repaymentInfo =
+      conditions[selectedCondition][activeRepaymentID] ||
+      conditions[selectedCondition][0];
+
+    const calculated = calculate(selectedCondition, repaymentInfo, {
+      price: NumberedPrice,
+      prePayment: NumberedPrePayment,
+    });
+
+    if (calculated.success) {
+      setMinPrePaymentError(null);
+      return;
+    }
+
+    setMinPrePaymentError({
+      minPrePayment: calculated.minPrePayment,
+      text: ` با توجه به شرایط انتخابی شما حداقل پیش پرداخت ${Math.ceil(
+        calculated.minPrePayment
+      ).toLocaleString()} تومان می باشد.`,
+    });
+  }, [activeRepaymentID, selectedCondition, prePayment, price]);
 
   return (
-    <Box component={"form"} onSubmit={handleSubmit(submitHandler)}>
-      <TextField
-        margin="dense"
-        fullWidth
-        id="product-price"
-        label="قیمت محصول"
-        placeholder="به تومان وارد کنید."
-        variant="outlined"
-        {...register("price")}
-        error={!!errors.price}
-        helperText={!!errors.price && errors.price?.message}
-      />
-
-      <TextField
-        margin="dense"
-        fullWidth
-        id="pre-payment"
-        label="پیش پرداخت"
-        placeholder="به تومان وارد کنید."
-        variant="outlined"
-        inputMode="decimal"
-        className="text-xs"
-        {...register("prePayment")}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "orange", // رنگ کادر معمولی
-            },
-            "&:hover fieldset": {
-              borderColor: "orange", // موقع هاور
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "blue", // موقع فوکوس
-            },
-          },
-          "& .MuiInputLabel-root": {
-            color: "gray", // رنگ لیبل معمولی
-          },
-          "& .Mui-focused.MuiInputLabel-root": {
-            color: "blue", // رنگ لیبل موقع فوکوس
-          },
-        }}
-      />
-
-      <Controller
-        name="condition"
-        control={control}
-        render={({ field }) => (
-          <FormControl fullWidth margin="dense">
-            <InputLabel id="conditions-select-form">نحوه پرداخت</InputLabel>
-            <Select
-              labelId="conditions-select-form"
-              id="conditions-select"
-              label="شرایط پرداخت"
-              {...field}
-              error={!!errors.condition}
-            >
-              <MenuItem dir="rtl" value={"bank-loan-check-guarantee"}>
-                فروش اقساطی با تسهیلات بانکی
-              </MenuItem>
-              <MenuItem dir="rtl" value={"bank-loan-promissory-guarantee"}>
-                فروش با سفته
-              </MenuItem>
-              <MenuItem dir="rtl" value={"company"}>
-                فروش چکی (هر دو ماه یک چک)
-              </MenuItem>
-            </Select>
-            {!!errors.condition && (
-              <FormHelperText error={!!errors.condition}>
-                {errors.condition.message}
-              </FormHelperText>
-            )}
-          </FormControl>
-        )}
-      />
-
-      {!selectedCondition ||
-        (selectedCondition !== "none" && (
-          <div className="mb-2">
-            <Typography>بازه پرداخت</Typography>
-            <Swiper
-              modules={[FreeMode]}
-              spaceBetween={5}
-              slidesPerView={"auto"}
-              onSlideChange={() => console.log("slide change")}
-              onSwiper={(swiper) => console.log(swiper)}
-              freeMode={true}
-              grabCursor={true} // حالت دست برای تجربه کاربری بهتر
-            >
-              {conditions[selectedCondition].map((item: any, index: number) => {
-                return (
-                  <>
-                    <SwiperSlide style={{ width: "auto" }} key={item.id}>
-                      <Button
-                        sx={{
-                          height: "45px",
-                          whiteSpace: "nowrap",
-                        }}
-                        variant={
-                          activeRepaymentID === index ? "contained" : "outlined"
-                        }
-                        onClick={() => setActiveRepaymentID(index)}
-                      >
-                        {item.repayment} ماهه{" "}
-                        {item.desc ? `(${item.desc})` : ""}
-                      </Button>
-                    </SwiperSlide>
-                  </>
-                );
-              })}
-            </Swiper>
-          </div>
-        ))}
-
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        sx={{ padding: "0.5rem 0" }}
+    <>
+      <Box
+        component={"form"}
+        sx={{ mb: 3 }}
+        onSubmit={handleSubmit(submitHandler)}
       >
-        محاسبه اقساط
-      </Button>
-    </Box>
+        <Alert severity="info">
+          پس از اعمال تغییرات مورد نظر حتما گزینه محاسبه را بزنید.
+        </Alert>
+        <TextField
+          margin="dense"
+          fullWidth
+          id="product-price"
+          label="قیمت محصول"
+          placeholder="به تومان وارد کنید."
+          variant="outlined"
+          {...register("price")}
+          error={!!errors.price}
+          helperText={!!errors.price && errors.price?.message}
+        />
+
+        <TextField
+          margin="dense"
+          fullWidth
+          id="pre-payment"
+          label="پیش پرداخت"
+          placeholder="به تومان وارد کنید."
+          variant="outlined"
+          inputMode="decimal"
+          className="text-xs"
+          {...register("prePayment")}
+          error={minPrePaymentError}
+          helperText={
+            minPrePaymentError && (
+              <span className="flex items-center gap-3">
+                <span>{minPrePaymentError.text}</span>
+                {/* <Button
+                variant="contained"
+                color="success"
+                onClick={() =>
+                  setValue(
+                    "prePayment",
+                    formatNumber(minPrePaymentError.minPrePayment.toString()),
+                    {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    }
+                  )
+                }
+              >
+                اعمال حداقل پیش پرداخت
+              </Button> */}
+              </span>
+            )
+          }
+          sx={
+            {
+              // "& .MuiOutlinedInput-root": {
+              //   "& fieldset": {
+              //     borderColor: "orange", // رنگ کادر معمولی
+              //   },
+              //   "&:hover fieldset": {
+              //     borderColor: "orange", // موقع هاور
+              //   },
+              //   "&.Mui-focused fieldset": {
+              //     borderColor: "blue", // موقع فوکوس
+              //   },
+              // },
+              // "& .MuiInputLabel-root": {
+              //   color: "gray", // رنگ لیبل معمولی
+              // },
+              // "& .Mui-focused.MuiInputLabel-root": {
+              //   color: "blue", // رنگ لیبل موقع فوکوس
+              // },
+            }
+          }
+        />
+
+        <Controller
+          name="condition"
+          control={control}
+          render={({ field }) => (
+            <FormControl fullWidth margin="dense">
+              <InputLabel id="conditions-select-form">نحوه پرداخت</InputLabel>
+              <Select
+                labelId="conditions-select-form"
+                id="conditions-select"
+                label="شرایط پرداخت"
+                {...field}
+                error={!!errors.condition}
+              >
+                <MenuItem dir="rtl" value={"bank-loan-check-guarantee"}>
+                  فروش اقساطی با تسهیلات بانکی
+                </MenuItem>
+                <MenuItem dir="rtl" value={"bank-loan-promissory-guarantee"}>
+                  فروش با سفته
+                </MenuItem>
+                <MenuItem dir="rtl" value={"company"}>
+                  فروش چکی (هر دو ماه یک چک)
+                </MenuItem>
+              </Select>
+              {!!errors.condition && (
+                <FormHelperText error={!!errors.condition}>
+                  {errors.condition.message}
+                </FormHelperText>
+              )}
+            </FormControl>
+          )}
+        />
+
+        {!selectedCondition ||
+          (selectedCondition !== "none" && (
+            <div className="mb-2">
+              <Typography>بازه پرداخت</Typography>
+              <Swiper
+                modules={[FreeMode]}
+                spaceBetween={5}
+                slidesPerView={"auto"}
+                freeMode={true}
+                grabCursor={true}
+              >
+                {conditions[selectedCondition].map(
+                  (item: any, index: number) => {
+                    return (
+                      <>
+                        <SwiperSlide style={{ width: "auto" }} key={item.id}>
+                          <Button
+                            sx={{
+                              height: "45px",
+                              whiteSpace: "nowrap",
+                            }}
+                            variant={
+                              activeRepaymentID === index
+                                ? "contained"
+                                : "outlined"
+                            }
+                            onClick={() => setActiveRepaymentID(index)}
+                          >
+                            {item.repayment} ماهه{" "}
+                            {item.desc ? `(${item.desc})` : ""}
+                          </Button>
+                        </SwiperSlide>
+                      </>
+                    );
+                  }
+                )}
+              </Swiper>
+            </div>
+          ))}
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ padding: "0.5rem 0" }}
+        >
+          محاسبه اقساط
+        </Button>
+      </Box>
+
+      {installmentsInfo && <InstallMentInfo info={installmentsInfo} />}
+    </>
   );
 }
