@@ -11,12 +11,16 @@ import Select from "@mui/material/Select";
 import FormHelperText from "@mui/material/FormHelperText";
 import { userInfoDTO } from "@/types/user";
 import { userInfoFormSchema } from "@/validation/schemas/user";
+import GradeScoreDialog from "./GradeScoreDialog";
+import { useState } from "react";
 
 export default function UserInformationForm({
   defaultValues,
 }: {
   defaultValues: userInfoDTO;
 }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   const {
     register,
     control,
@@ -117,10 +121,14 @@ export default function UserInformationForm({
               <FormHelperText>
                 <span
                   className="cursor-pointer"
-                  onClick={() => console.log("hello")}
+                  onClick={() => setDialogOpen(true)}
                 >
                   رتبه اعتباری چیست؟
                 </span>
+                <GradeScoreDialog
+                  open={dialogOpen}
+                  onClose={() => setDialogOpen(false)}
+                />
               </FormHelperText>
             </FormControl>
           )}

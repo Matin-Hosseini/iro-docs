@@ -165,11 +165,7 @@ export default function CalculatorForm() {
 
   return (
     <>
-      <Box
-        component={"form"}
-        sx={{ mb: 3 }}
-        onSubmit={handleSubmit(submitHandler)}
-      >
+      <Box component={"form"} onSubmit={handleSubmit(submitHandler)}>
         <Alert severity="info">
           پس از اعمال تغییرات مورد نظر حتما گزینه محاسبه را بزنید.
         </Alert>
@@ -324,7 +320,11 @@ export default function CalculatorForm() {
         </Button>
       </Box>
 
-      {installmentsInfo && <InstallMentInfo info={installmentsInfo} />}
+      {installmentsInfo && (
+        <div className="mt-4">
+          <InstallMentInfo info={installmentsInfo} />
+        </div>
+      )}
     </>
   );
 }
