@@ -7,6 +7,11 @@ const {
 
 const router = express.Router();
 
-router.post("/", authMiddleware, hasAccessMiddleware([]), addRoleToUser);
+router.post(
+  "/",
+  authMiddleware,
+  hasAccessMiddleware(["user-form:update"]),
+  addRoleToUser
+);
 
 module.exports = router;

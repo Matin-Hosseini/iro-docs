@@ -1,8 +1,6 @@
 const { validateToken } = require("../utils/funcs/token");
+const { getUserAccessData } = require("../utils/funcs/user-access-data");
 const UserModel = require("./../models/user");
-const UserRoleModel = require("./../models/auth/user-role");
-const RolePermissionModel = require("./../models/auth/role-permission");
-const RoleModel = require("./../models/auth/role");
 
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
@@ -12,7 +10,7 @@ const authMiddleware = async (req, res, next) => {
 
   const validatedToken = await validateToken(token);
 
-  if (!validatedToken)
+  if (!validatedToken.isValid)
     return res.status(400).json({ msg: "token is not valid" });
 
   const user = await UserModel.findOne({ _id: validatedToken.decoded._id });
@@ -35,47 +33,22 @@ const authMiddleware = async (req, res, next) => {
 };
 
 const hasAccessMiddleware = (permissions) => async (req, res, next) => {
-  const user = req.user;
+  const { user } = req;
 
-  const userRoles = await UserRoleModel.find({ user_id: user._id });
+  const { roles, permissions: userPermissions } = await getUserAccessData(user);
+  console.log(roles);
 
-  const userRoleIDs = userRoles.map((role) => role.role_id);
+  const userPermissionNames = userPermissions.map(
+    (userPermission) => userPermission.name
+  );
 
-  const rolePermissions = await RolePermissionModel.find({
-    role_id: userRoleIDs[0],
-  }).populate(["permission_id", "role_id"]);
+  const hasPermission = permissions.every((permission) =>
+    userPermissionNames.includes(permission)
+  );
 
-  const permissions = await RolePermissionModel.aggregate([
-    {
-      $match: {
-        role_id: { $in: userRoleIDs },
-      },
-    },
-    {
-      $lookup: {
-        from: "Permissions", // نام collection، نه مدل
-        localField: "permission_id",
-        foreignField: "_id",
-        as: "permission",
-      },
-    },
-    { $unwind: "$permission" },
-    {
-      $replaceRoot: { newRoot: "$permission" },
-    },
-    {
-      $group: {
-        _id: "$_id", // برای حذف تکراری‌ها
-        name: { $first: "$name" },
-        title: { $first: "$title" },
-        description: { $first: "$description" },
-      },
-    },
-  ]);
+  if (!hasPermission)
+    return res.status(403).json({ msg: "کاربر دسترسی لازم را ندارد." });
 
-  res.status(200).json({ permissions });
-
-  console.log(permissions);
   next();
 };
 

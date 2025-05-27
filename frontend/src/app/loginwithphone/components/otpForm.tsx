@@ -9,6 +9,7 @@ import { otpDTO } from "@/types/login/login";
 import { optAction } from "@/actions/login";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
+import SubmitBtn from "@/components/SubmitBtn";
 
 export default function OtpForm({
   mobileNo,
@@ -52,14 +53,15 @@ export default function OtpForm({
         {...register("code")}
         helperText={!!errors.code && errors.code.message}
       />
-      <Button
+
+      <SubmitBtn
+        isSubmitting={isSubmitting}
         variant="contained"
         fullWidth
         sx={{ padding: "0.7rem 0" }}
-        type="submit"
       >
-        {isSubmitting ? "..." : "ورود"}
-      </Button>
+        ورود
+      </SubmitBtn>
     </form>
   );
 }
