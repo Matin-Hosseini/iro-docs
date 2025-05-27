@@ -36,8 +36,8 @@ const UserSchema = new Schema(
     },
     grade_score: {
       type: String,
-      default: "A",
-      enum: ["A", "B", "C", "D", "E"],
+      default: "",
+      enum: ["A", "B", "C", "D", "E", ""],
     },
     postal_code: {
       type: String,

@@ -3,6 +3,8 @@ const { generateToken, validateToken } = require("../../utils/funcs/token");
 const OtpModel = require("./../../models/otp");
 const UserModel = require("./../../models/user");
 const jwt = require("jsonwebtoken");
+const RoleModel = require("./../../models/auth/role");
+const UserRoleModel = require("./../../models/auth/user-role");
 
 const sendOtp = async (req, res) => {
   const code = Math.floor(10000 + Math.random() * 900000);
@@ -61,9 +63,17 @@ const checkOtp = async (req, res) => {
     return res.status(200).json({ msg: "ok", user: targetUser, token });
   }
 
-  const token = generateToken({ phone });
+  const userRole = await RoleModel.findOne({ name: "user" });
 
   const newUser = await UserModel.create({ phone });
+
+  const token = generateToken({ _id: newUser._id });
+
+  await UserRoleModel.create({
+    user_id: newUser._id,
+    role_id: userRole._id,
+  });
+
   return res.status(200).json({ msg: "ok", user: newUser, token });
 };
 
