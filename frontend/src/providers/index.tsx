@@ -6,7 +6,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <MuiProvider>
       {children}
-      <HolyLoader />
+      <HolyLoader dir="rtl" />
       <Toaster richColors dir="rtl" className="font-dana" />
     </MuiProvider>
   );
