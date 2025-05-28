@@ -4,6 +4,10 @@ const UserModel = require("./../models/user");
 
 const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
+
+  if (!authHeader)
+    return res.status(400).json({ msg: "no auth header provided" });
+
   const token = authHeader.split(" ")[1];
 
   if (!token) return res.status(401).json({ msg: "token is not provided" });
@@ -36,7 +40,6 @@ const hasAccessMiddleware = (permissions) => async (req, res, next) => {
   const { user } = req;
 
   const { roles, permissions: userPermissions } = await getUserAccessData(user);
-  console.log(roles);
 
   const userPermissionNames = userPermissions.map(
     (userPermission) => userPermission.name

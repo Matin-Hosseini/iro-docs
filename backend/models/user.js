@@ -34,6 +34,11 @@ const UserSchema = new Schema(
       default: "",
       trim: true,
     },
+    requested_product: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     grade_score: {
       type: String,
       default: "",

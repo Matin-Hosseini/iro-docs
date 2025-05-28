@@ -13,6 +13,8 @@ import { userInfoDTO } from "@/types/user";
 import { userInfoFormSchema } from "@/validation/schemas/user";
 import GradeScoreDialog from "./GradeScoreDialog";
 import { useState } from "react";
+import { updateUserInfoAction } from "@/actions/user";
+import { toast } from "sonner";
 
 export default function UserInformationForm({
   defaultValues,
@@ -29,7 +31,13 @@ export default function UserInformationForm({
   } = useForm({ resolver: zodResolver(userInfoFormSchema), defaultValues });
 
   const userInfoSubmitHandler = async (data: userInfoDTO) => {
-    console.log(data);
+    const result = await updateUserInfoAction(data);
+
+    if (!result?.isSuccess) {
+      return toast.error(result.msg);
+    }
+
+    toast.success(result.msg);
   };
 
   return (
@@ -52,11 +60,11 @@ export default function UserInformationForm({
           helperText={!!errors.lastName && errors.lastName.message}
         />
         <TextField
-          error={!!errors.natinal_id}
-          {...register("natinal_id")}
+          error={!!errors.national_id}
+          {...register("national_id")}
           label="کد ملی"
           fullWidth
-          helperText={!!errors.natinal_id && errors.natinal_id.message}
+          helperText={!!errors.national_id && errors.national_id.message}
         />
         <TextField
           error={!!errors.fathers_name}
@@ -112,6 +120,12 @@ export default function UserInformationForm({
                 </MenuItem>
                 <MenuItem dir="rtl" value={"C"}>
                   C
+                </MenuItem>
+                <MenuItem dir="rtl" value={"D"}>
+                  D
+                </MenuItem>
+                <MenuItem dir="rtl" value={"E"}>
+                  E
                 </MenuItem>
               </Select>
 

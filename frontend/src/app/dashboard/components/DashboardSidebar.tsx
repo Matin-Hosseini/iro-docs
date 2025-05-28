@@ -1,5 +1,7 @@
+import { getMe } from "@/utils/funcs/me";
 import Logout from "./Logout";
 import NavLink from "./NavLink";
+import { redirect } from "next/navigation";
 
 export const DashboardSideBarContent = () => {
   return (
@@ -24,7 +26,11 @@ export const DashboardSideBarContent = () => {
   );
 };
 
-export default function DashboardSidebar() {
+export default async function DashboardSidebar() {
+  const { isSuccess, userInfo, permissions } = await getMe();
+
+  if (!isSuccess) return redirect("/");
+
   return (
     <aside className="hidden lg:block  pl-1.5">
       <DashboardSideBarContent />

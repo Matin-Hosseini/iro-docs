@@ -14,7 +14,7 @@ export const userInfoFormSchema = z.object({
     .string()
     .min(1, "نام خانوادگی خود را وارد کنید.")
     .regex(onlyEnglishWordsRegex, "از عبارات فارسی استفاده کنید."),
-  natinal_id: z
+  national_id: z
     .string()
     .min(1, "کد ملی خود را وارد کنید.")
     .regex(nationalIDRegex, "کد ملی نا معتبر می باشد."),

@@ -1,9 +1,9 @@
 const express = require("express");
-const { addPermission } = require("../../controllers/auth/permission");
 const { hasAccessMiddleware } = require("../../middlewares/auth");
+const { updateUserInfo } = require("../../controllers/user");
 
 const router = express.Router();
 
-router.post("/", hasAccessMiddleware(["permission:create"]), addPermission);
+router.put("/info", hasAccessMiddleware(["user-info:update"]), updateUserInfo);
 
 module.exports = router;

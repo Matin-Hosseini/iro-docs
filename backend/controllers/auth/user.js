@@ -5,6 +5,7 @@ const UserModel = require("./../../models/user");
 const jwt = require("jsonwebtoken");
 const RoleModel = require("./../../models/auth/role");
 const UserRoleModel = require("./../../models/auth/user-role");
+const { getUserAccessData } = require("../../utils/funcs/user-access-data");
 
 const sendOtp = async (req, res) => {
   const code = Math.floor(10000 + Math.random() * 900000);
@@ -80,7 +81,9 @@ const checkOtp = async (req, res) => {
 const me = async (req, res) => {
   const user = req.user;
 
-  return res.status(200).json({ msg: "ok", user });
+  const { permissions } = await getUserAccessData(user);
+
+  return res.status(200).json({ msg: "ok", user, permissions });
 };
 
 module.exports = { sendOtp, checkOtp, me };

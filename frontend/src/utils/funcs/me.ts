@@ -15,7 +15,11 @@ const getMe = async () => {
       },
     });
 
-    return { isSuccess: true, userInfo: res.data.user };
+    return {
+      isSuccess: true,
+      userInfo: res.data.user,
+      permissions: res.data.permissions,
+    };
   } catch (error: any) {
     console.log(error.response.data);
     return { isSuccess: false, msg: error.response.data };
