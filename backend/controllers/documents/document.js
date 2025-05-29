@@ -6,35 +6,37 @@ const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const uploadSingle = async (req, res) => {
-  console.log(req.file);
+  const files = req.files;
+  console.log(files);
+  // console.log(req.file);
 
-  const fileName = `documents/${req.file.originalname}`;
+  // const fileName = `documents/${req.file.originalname}`;
 
-  const params = {
-    Body: req.file.buffer,
-    Bucket: process.env.LIARA_BUCKET_NAME,
-    Key: fileName,
-    ContentType: req.file.mimetype,
-  };
+  // const params = {
+  //   Body: req.file.buffer,
+  //   Bucket: process.env.LIARA_BUCKET_NAME,
+  //   Key: fileName,
+  //   ContentType: req.file.mimetype,
+  // };
 
-  const command = new PutObjectCommand(params);
+  // const command = new PutObjectCommand(params);
 
-  const response = await s3Client.send(command);
+  // const response = await s3Client.send(command);
 
-  console.log(response);
+  // console.log(response);
 
-  const newDocument = await documentModel.create({
-    userId: "6825b0201d772a3991a033ce",
-    type: "birth_certificate",
-    title: "صفحه دوم شناسنامه",
-    description: "",
-    fileKey: fileName,
-  });
+  // const newDocument = await documentModel.create({
+  //   userId: "6825b0201d772a3991a033ce",
+  //   type: "birth_certificate",
+  //   title: "صفحه دوم شناسنامه",
+  //   description: "",
+  //   fileKey: fileName,
+  // });
 
   return res.send({
     status: "success",
     message: "file uploaded!",
-    newDocument,
+    
   });
 };
 
