@@ -1,0 +1,47 @@
+[{
+  "_id": {
+    "$oid": "6832fcf571a834b59523350c"
+  },
+  "phone": "09129323541",
+  "firstName": "سید متین",
+  "lastName": "حسینی",
+  "birth_date": null,
+  "national_id": "0200040431",
+  "fathers_name": "سید عبداله",
+  "grade_score": "C",
+  "postal_code": "1765886984",
+  "address": "تهران",
+  "status": "active",
+  "lastLoginAt": null,
+  "createdAt": {
+    "$date": "2025-05-25T11:20:21.599Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-28T14:44:22.902Z"
+  },
+  "__v": 0,
+  "requested_product": "آیفون"
+},
+{
+  "_id": {
+    "$oid": "6835f45dbb25abe0347f233b"
+  },
+  "phone": "09190888126",
+  "firstName": "",
+  "lastName": "",
+  "birth_date": null,
+  "national_id": "",
+  "fathers_name": "",
+  "grade_score": "",
+  "postal_code": "",
+  "address": "",
+  "status": "active",
+  "lastLoginAt": null,
+  "createdAt": {
+    "$date": "2025-05-27T17:20:29.354Z"
+  },
+  "updatedAt": {
+    "$date": "2025-05-27T17:20:29.354Z"
+  },
+  "__v": 0
+}]
