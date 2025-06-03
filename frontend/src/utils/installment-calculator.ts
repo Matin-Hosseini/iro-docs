@@ -13,8 +13,6 @@ const calculate = (
   const targetCondition = conditions[conditionName];
 
   if (!targetCondition) {
-    console.log("condition not found");
-
     return;
   }
 

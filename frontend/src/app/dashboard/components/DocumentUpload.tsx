@@ -143,9 +143,7 @@ export default function DocumentUpload() {
       const res = await api.post("/api/document-upload", formData);
 
       toast.success(res.data);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   //birth certificate first / second page
@@ -247,7 +245,6 @@ export default function DocumentUpload() {
                           type="file"
                           multiple
                           onChange={(e) => {
-                            console.log("uploading");
                             field.onChange(e.target.files);
 
                             const file = e.target.files?.[0];
@@ -348,7 +345,6 @@ export default function DocumentUpload() {
                           type="file"
                           multiple
                           onChange={(e) => {
-                            console.log("uploading");
                             field.onChange(e.target.files);
 
                             const file = e.target.files?.[0];

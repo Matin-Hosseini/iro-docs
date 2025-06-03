@@ -15,6 +15,7 @@
     "@hookform/resolvers": "^5.0.1",
     "@mui/material": "^7.1.0",
     "@mui/material-nextjs": "^7.1.0",
+    "@mui/x-data-grid": "^8.5.0",
     "@tailwindcss/postcss": "^4.1.7",
     "axios": "^1.9.0",
     "embla-carousel-react": "^8.6.0",

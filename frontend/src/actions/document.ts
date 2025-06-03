@@ -18,6 +18,4 @@ export const uploadDocumentsAction = async (formData: FormData) => {
       headers: { Authorization: `Bearer ${authToken.value}` },
     }
   );
-
-  console.log(response);
 };

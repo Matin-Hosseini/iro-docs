@@ -15,7 +15,9 @@ export const DashboardSideBarContent = () => {
             <NavLink href="/dashboard/calculator">محاسبه گر اقساط</NavLink>
           </li>
           <li>
-            <NavLink href="/dashboard/loan-request">درخواست تسهیلات</NavLink>
+            <NavLink href="/dashboard/loan-request">
+              درخواست تسهیلات خرید کالا
+            </NavLink>
           </li>
         </ul>
       </div>

@@ -46,8 +46,6 @@ export const optAction = async (
 
     return { isSuccess: true, data };
   } catch (error: any) {
-    console.log(error.response.data);
-
     return { isSuccess: false, error: error.response.data };
   }
 };

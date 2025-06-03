@@ -21,7 +21,6 @@ const getMe = async () => {
       permissions: res.data.permissions,
     };
   } catch (error: any) {
-    console.log(error.response.data);
     return { isSuccess: false, msg: error.response.data };
   }
 };

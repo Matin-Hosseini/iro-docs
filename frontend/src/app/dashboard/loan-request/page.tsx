@@ -1,13 +1,15 @@
 import { getMe } from "@/utils/funcs/me";
 import { redirect } from "next/navigation";
 import SectionContainer from "../components/SectionContainer";
-import UserInformationForm from "../components/userInfoForm";
-import DocumentUpload from "../components/DocumentUpload";
-import CalculatorForm from "@/components/CalculatorForm";
-
 import Typography from "@mui/material/Typography";
-import Alert from "@mui/material/Alert";
-import { grey } from "@mui/material/colors";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+
+import { IoSadOutline } from "react-icons/io5";
+import { IoIosAdd } from "react-icons/io";
+
+import { red } from "@mui/material/colors";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const { isSuccess, userInfo } = await getMe();
@@ -16,41 +18,40 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <SectionContainer className="mb-3">
-        <Alert>
-          <Typography component={"p"}>
-            جهت دریافت تسهیلات خرید کالا فرم های زیر را تکمیل کنید.
-          </Typography>
-          <Typography component={"p"}>
-            پس از تکمیل موارد خواسته شده، اطلاعات توسط کارشناسان بررسی و نتیجه
-            اعلام خواهد شد.
-          </Typography>
-        </Alert>
-      </SectionContainer>
-
-      <SectionContainer className="mb-3">
-        <Typography component={"p"} sx={{ fontSize: 24 }}>
-          محاسبه گر اقساط
-        </Typography>
-
-        <Typography
-          component={"p"}
-          sx={{ fontSize: 15, mb: 2, color: grey[600] }}
-        >
-          از شرایط و نحوه پرداخت متنوع اقساط خود مطلع شوید.
-        </Typography>
-
-        <Typography component={"p"}></Typography>
-        <CalculatorForm />
-      </SectionContainer>
-
-      <SectionContainer className="mb-3">
-        <p className="text-2xl mb-6">مشخصات فردی:</p>
-        <UserInformationForm defaultValues={userInfo} />
-      </SectionContainer>
       <SectionContainer>
-        <p className="text-2xl mb-6">بارگزاری مدارک:</p>
-        <DocumentUpload />
+        <Typography component={"p"} sx={{ fontSize: 24, mb: 2 }}>
+          تسهیلات درخواستی شما
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            border: "1px dashed",
+            borderColor: red[500],
+            color: red[500],
+            mb: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "4rem 0",
+            }}
+          >
+            <IoSadOutline className="text-5xl mb-3"/>
+            <Typography>شما هیچ تسهیلاتی درخواست نداده اید.</Typography>
+          </Box>
+        </Box>
+        <Link href={"/dashboard/loan-request/new"}>
+          <Button variant="contained" fullWidth startIcon={<IoIosAdd />}>
+            درخواست جدید تسهیلات خرید کالا
+          </Button>
+        </Link>
       </SectionContainer>
     </div>
   );

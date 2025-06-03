@@ -1,6 +1,5 @@
 import DashboardContent from "./components/DashboardContent";
 import DashboardSidebar from "./components/DashboardSidebar";
-import MobileHeader from "./components/MobileHeader";
 
 export default function DashboardLayout({
   children,
