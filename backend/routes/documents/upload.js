@@ -8,6 +8,7 @@ const {
 const AWS = require("aws-sdk");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
+const { authMiddleware } = require("../../middlewares/auth");
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -15,6 +16,7 @@ const router = express.Router();
 
 router.post(
   "/upload",
+  authMiddleware,
   upload.fields([
     { name: "birth_certificate_first_page" },
     { name: "birth_certificate_second_page" },
