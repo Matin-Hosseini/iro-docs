@@ -18,7 +18,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { red } from "@mui/material/colors";
 
 import { FaFilePdf } from "react-icons/fa6";
-import { uploadDocumentsAction } from "@/actions/document";
+import api from "@/lib/axios";
+import { toast } from "sonner";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -128,20 +129,23 @@ export default function DocumentUpload() {
     handleSubmit,
 
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
   const submitHandler = async (data: any) => {
-    console.log(data);
     const formData = new FormData();
 
     for (let i in data) {
       formData.append(i, data[i][0]);
     }
 
-    const result = await uploadDocumentsAction(formData);
+    try {
+      const res = await api.post("/api/document-upload", formData);
 
-    // console.log(formData);
+      toast.success(res.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //birth certificate first / second page
@@ -182,7 +186,7 @@ export default function DocumentUpload() {
                   height: "100%",
                 }}
               >
-                <div className="bg-gray-400 flex justify-center rounded-md mb-3 h-[250px]">
+                <div className="bg-slate-300 flex justify-center rounded-md mb-3 h-[250px]">
                   <Image
                     src={bcfpUrl || blankDocumentImage.src}
                     alt="تصویر صفحه اول شناسنامه"
@@ -283,7 +287,7 @@ export default function DocumentUpload() {
                   height: "100%",
                 }}
               >
-                <div className="bg-gray-400 flex justify-center rounded-md mb-3  h-[250px] max-h-[250px]">
+                <div className="bg-slate-300 flex justify-center rounded-md mb-3  h-[250px] max-h-[250px]">
                   <Image
                     src={bcspUrl || blankDocumentImage.src}
                     alt="تصویر صفحه دوم شناسنامه"
@@ -393,7 +397,7 @@ export default function DocumentUpload() {
                   height: "100%",
                 }}
               >
-                <div className="bg-gray-400 flex justify-center rounded-md mb-3 h-[250px]">
+                <div className="bg-slate-300 flex justify-center rounded-md mb-3 h-[250px]">
                   <Image
                     src={ncfUrl || blankDocumentImage.src}
                     alt="تصویر جلوی کارت ملی"
@@ -492,7 +496,7 @@ export default function DocumentUpload() {
                   height: "100%",
                 }}
               >
-                <div className="bg-gray-400 flex justify-center rounded-md mb-3  h-[250px] max-h-[250px]">
+                <div className="bg-slate-300 flex justify-center rounded-md mb-3  h-[250px] max-h-[250px]">
                   <Image
                     src={ncbUrl || blankDocumentImage.src}
                     alt="تصویر پشت کارت ملی"
@@ -600,7 +604,7 @@ export default function DocumentUpload() {
                   height: "100%",
                 }}
               >
-                <div className="bg-gray-400 flex justify-center rounded-md mb-3 h-[250px]">
+                <div className="bg-slate-300 flex justify-center rounded-md mb-3 h-[250px]">
                   <Image
                     src={jcUrl || blankDocumentImage.src}
                     alt="تصویر گواهی شغلی"
@@ -708,7 +712,7 @@ export default function DocumentUpload() {
                   height: "100%",
                 }}
               >
-                <div className="bg-gray-400 flex justify-center rounded-md mb-3 h-[250px]">
+                <div className="bg-slate-300 flex justify-center rounded-md mb-3 h-[250px]">
                   {!csPDF && (
                     <div className="flex items-center justify-center h-full">
                       <FaFilePdf className="text-gray-200 text-8xl" />
@@ -810,7 +814,7 @@ export default function DocumentUpload() {
         </div>
       </Box>
 
-      <SubmitBtn>ارسال مدارک</SubmitBtn>
+      <SubmitBtn isSubmitting={isSubmitting}>ارسال مدارک</SubmitBtn>
     </Box>
   );
 }

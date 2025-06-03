@@ -1,11 +1,9 @@
 "use server";
 
-import api from "@/lib/axios";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const uploadDocumentsAction = async (formData: FormData) => {
-  console.log("running server action");
   const cookieStore = await cookies();
 
   const authToken = cookieStore.get("auth_token");
@@ -17,7 +15,7 @@ export const uploadDocumentsAction = async (formData: FormData) => {
     {
       body: formData,
       method: "POST",
-      headers: { Authorization: `Bearer ${authToken}` },
+      headers: { Authorization: `Bearer ${authToken.value}` },
     }
   );
 

@@ -23,7 +23,6 @@ import calculate from "@/utils/installment-calculator";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
 import Alert from "@mui/material/Alert";
-import { blue } from "@mui/material/colors";
 
 import "swiper/css";
 import InstallMentInfo from "./InstallMentInfo";
@@ -165,12 +164,15 @@ export default function CalculatorForm() {
 
   return (
     <>
-      <Box component={"form"} onSubmit={handleSubmit(submitHandler)}>
-        <Alert severity="info">
-          پس از اعمال تغییرات مورد نظر حتما گزینه محاسبه را بزنید.
-        </Alert>
+      <Alert severity="info" sx={{ mb: 2 }}>
+        پس از اعمال تغییرات مورد نظر حتما گزینه محاسبه را بزنید.
+      </Alert>
+      <Box
+        component={"form"}
+        onSubmit={handleSubmit(submitHandler)}
+        sx={{ display: "flex", flexDirection: "column", gap: 1 }}
+      >
         <TextField
-          margin="dense"
           fullWidth
           id="product-price"
           label="قیمت محصول"
@@ -182,7 +184,6 @@ export default function CalculatorForm() {
         />
 
         <TextField
-          margin="dense"
           fullWidth
           id="pre-payment"
           label="پیش پرداخت"
@@ -242,7 +243,7 @@ export default function CalculatorForm() {
           name="condition"
           control={control}
           render={({ field }) => (
-            <FormControl fullWidth margin="dense">
+            <FormControl fullWidth>
               <InputLabel id="conditions-select-form">نحوه پرداخت</InputLabel>
               <Select
                 labelId="conditions-select-form"
