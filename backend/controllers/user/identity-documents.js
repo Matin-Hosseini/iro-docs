@@ -5,7 +5,7 @@ const s3Client = require("./../../utils/s3");
 const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
-const uploadFileToLiara = async (file, folder = "uploads") => {
+const uploadFileToBucket = async (file, folder = "uploads") => {
   const params = {
     Body: file.buffer,
     Bucket: process.env.LIARA_BUCKET_NAME,
@@ -25,11 +25,23 @@ const uploadFileToLiara = async (file, folder = "uploads") => {
   }
 };
 
+const getFilesFromBucket = async (fileKey) => {
+  const params = {
+    Bucket: process.env.LIARA_BUCKET_NAME,
+    Key: fileKey,
+  };
+
+  const command = new GetObjectCommand(params);
+  const fileLink = await getSignedUrl(s3Client, command);
+
+  return { fileLink };
+};
+
 const uploadIdentityDocuments = async (req, res) => {
   const { body, files } = req;
 
   for (const doc in files) {
-    const { fileKey, success } = await uploadFileToLiara(
+    const { fileKey, success } = await uploadFileToBucket(
       files[doc][0],
       `/user-identity-documents/${req.user._id}`
     );
@@ -55,4 +67,40 @@ const uploadIdentityDocuments = async (req, res) => {
   });
 };
 
-module.exports = { uploadIdentityDocuments };
+const getIdentityDocuments = async (req, res) => {
+  const { user } = req;
+
+  const userIdentityDocuments = await IdentityDocment.find({
+    userId: user._id,
+  });
+
+  if (!userIdentityDocuments)
+    return res.status(200).json({ msg: "ok", documents: [] });
+
+  const documents = [];
+
+  for (doc of userIdentityDocuments) {
+    const { fileLink } = await getFilesFromBucket(doc.fileKey);
+
+    documents.push({
+      _id: doc._id,
+      type: doc.type,
+      title: doc.title,
+      fileLink,
+      status: doc.status,
+      order: doc.order,
+      rejectionReason: doc.rejectionReason,
+      reviewedBy: doc.reviewedBy,
+      reviewedAt: doc.reviewedAt,
+      uploadedAt: doc.uploadedAt,
+      createdAt: doc.createdAt,
+      updatedAt: doc.updatedAt,
+    });
+  }
+
+  const sortedDocs = documents.sort((a, b) => a.order - b.order);
+
+  res.status(200).json({ msg: "ok", documents: sortedDocs });
+};
+
+module.exports = { uploadIdentityDocuments, getIdentityDocuments };

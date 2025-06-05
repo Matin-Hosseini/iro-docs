@@ -1,6 +1,7 @@
 const express = require("express");
 const {
   uploadIdentityDocuments,
+  getIdentityDocuments,
 } = require("../../controllers/user/identity-documents");
 
 const multer = require("multer");
@@ -19,5 +20,7 @@ router.post(
   ]),
   uploadIdentityDocuments
 );
+
+router.get("/", getIdentityDocuments);
 
 module.exports = router;
