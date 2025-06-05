@@ -21,94 +21,93 @@ import api from "@/lib/axios";
 import { toast } from "sonner";
 
 import VisuallyHiddenInput from "@/components/VisuallyHiddenInput";
+import { redirect } from "next/navigation";
 
-const fiveMB = 5 * 1024 * 1024;
+const threeMB = 1 * 1024 * 1024;
 
 const schema = z.object({
   birth_certificate_first_page: z
     .any()
-    .refine((fileList) => fileList instanceof FileList && fileList.length > 0, {
-      message: "صفحه اول شناسنامه را بارگزاری کنید.",
-    })
     .refine(
       (fileList) =>
-        ["image/jpeg", "image/png", "image/webp"].includes(fileList?.[0]?.type),
+        fileList?.file instanceof FileList && fileList.file.length > 0,
+      {
+        message: "صفحه اول شناسنامه را بارگزاری کنید.",
+      }
+    )
+    .refine(
+      (fileList) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(
+          fileList?.file?.[0]?.type
+        ),
       {
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.[0]?.size > fiveMB), {
+    .refine((fileList) => !(fileList?.file[0]?.size > threeMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
   birth_certificate_second_page: z
     .any()
-    .refine((fileList) => fileList instanceof FileList && fileList.length > 0, {
-      message: "صفحه دوم شناسنامه را بارگزاری کنید.",
-    })
     .refine(
       (fileList) =>
-        ["image/jpeg", "image/png", "image/webp"].includes(fileList?.[0]?.type),
+        fileList?.file instanceof FileList && fileList.file.length > 0,
+      {
+        message: "صفحه دوم شناسنامه را بارگزاری کنید.",
+      }
+    )
+    .refine(
+      (fileList) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(
+          fileList?.file?.[0]?.type
+        ),
       {
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.[0]?.size > fiveMB), {
+    .refine((fileList) => !(fileList?.file?.[0]?.size > threeMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
   national_card_front: z
     .any()
-    .refine((fileList) => fileList instanceof FileList && fileList.length > 0, {
-      message: "تصویر جلوی کارت ملی را ارسال کنید.",
-    })
     .refine(
       (fileList) =>
-        ["image/jpeg", "image/png", "image/webp"].includes(fileList?.[0]?.type),
+        fileList?.file instanceof FileList && fileList.file.length > 0,
+      {
+        message: "تصویر جلوی کارت ملی را ارسال کنید.",
+      }
+    )
+    .refine(
+      (fileList) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(
+          fileList?.file?.[0]?.type
+        ),
       {
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.[0]?.size > fiveMB), {
+    .refine((fileList) => !(fileList?.file?.[0]?.size > threeMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
   national_card_back: z
     .any()
-    .refine((fileList) => fileList instanceof FileList && fileList.length > 0, {
-      message: "تصویر پشت کارت ملی را بارگزاری کنید.",
-    })
     .refine(
       (fileList) =>
-        ["image/jpeg", "image/png", "image/webp"].includes(fileList?.[0]?.type),
+        fileList?.file instanceof FileList && fileList.file.length > 0,
+      {
+        message: "تصویر پشت کارت ملی را بارگزاری کنید.",
+      }
+    )
+    .refine(
+      (fileList) =>
+        ["image/jpeg", "image/png", "image/webp"].includes(
+          fileList?.file?.[0]?.type
+        ),
       {
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.[0]?.size > fiveMB), {
-      message: "حجم فایل از حد مجاز بیشتر است.",
-    }),
-  job_certificate: z
-    .any()
-    .refine((fileList) => fileList instanceof FileList && fileList.length > 0, {
-      message: "گواهی شغلی خود را بارگزاری کنید.",
-    })
-    .refine(
-      (fileList) =>
-        ["image/jpeg", "image/png", "image/webp"].includes(fileList?.[0]?.type),
-      {
-        message: "فرمت فایل معتبر نمی باشد.",
-      }
-    )
-    .refine((fileList) => !(fileList?.[0]?.size > fiveMB), {
-      message: "حجم فایل از حد مجاز بیشتر است.",
-    }),
-  credit_score: z
-    .any()
-    .refine((fileList) => fileList instanceof FileList && fileList.length > 0, {
-      message: "فایل اعتبارسنجی خود را بارگزاری کنید.",
-    })
-    .refine((fileList) => ["application/pdf"].includes(fileList?.[0]?.type), {
-      message: "فرمت فایل باید PDF باشد.",
-    })
-    .refine((fileList) => !(fileList?.[0]?.size > fiveMB), {
+    .refine((fileList) => !(fileList?.file?.[0]?.size > threeMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
 });
@@ -125,16 +124,28 @@ export default function DocumentUpload() {
     const formData = new FormData();
 
     for (let i in data) {
-      formData.append(i, data[i][0]);
+      formData.append(i, data[i].file[0]);
+      formData.append(
+        `${i}_data`,
+        JSON.stringify({
+          fieldname: data[i].fieldname,
+          order: data[i].order,
+          label: data[i].label,
+        })
+      );
     }
 
     try {
-      const res = await api.post("/api/document-upload", formData);
+      const res = await api.post("/api/user/identity-documents", formData);
 
-      console.log("next response:", res);
       toast.success(res.data);
-    } catch (error) {
-      console.log("next error:", error);
+    } catch (error: any) {
+      if (error.status === 401) {
+        toast.error(error.response.data);
+        redirect("/");
+      }
+
+      toast.error(error.response.data);
     }
   };
 
@@ -145,12 +156,6 @@ export default function DocumentUpload() {
   //national card front/back
   const [ncfUrl, setNcfUrl] = useState<string | null>(null);
   const [ncbUrl, setNcbUrl] = useState<string | null>(null);
-
-  //job certificate
-  const [jcUrl, setJcUrl] = useState<string | null>(null);
-
-  //credit score
-  const [csPDF, setCsPDF] = useState<string | null>(null);
 
   return (
     <Box component={"form"} onSubmit={handleSubmit(submitHandler)}>
@@ -215,7 +220,7 @@ export default function DocumentUpload() {
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 5 مگابایت
+                    حداکثر حجم 3 مگابایت
                   </Typography>
                 </Box>
 
@@ -237,13 +242,26 @@ export default function DocumentUpload() {
                           type="file"
                           multiple
                           onChange={(e) => {
-                            field.onChange(e.target.files);
-
                             const file = e.target.files?.[0];
+
+                            const wrappedFile = {
+                              file: e.target.files,
+                              label: "تصویر صفحه اول شناسنامه",
+                              order: 1,
+                              fieldname: "birth_certificate_first_page",
+                            };
+
+                            field.onChange(wrappedFile);
+
+                            if (bcfpUrl) {
+                              URL.revokeObjectURL(bcfpUrl);
+                            }
 
                             if (file) {
                               const objectUrl = URL.createObjectURL(file);
                               setBcfpUrl(objectUrl);
+                            } else {
+                              setBcfpUrl(null);
                             }
                           }}
                         />
@@ -315,7 +333,7 @@ export default function DocumentUpload() {
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 5 مگابایت
+                    حداکثر حجم 3 مگابایت
                   </Typography>
                 </Box>
 
@@ -337,13 +355,26 @@ export default function DocumentUpload() {
                           type="file"
                           multiple
                           onChange={(e) => {
-                            field.onChange(e.target.files);
-
                             const file = e.target.files?.[0];
+
+                            const wrappedFile = {
+                              file: e.target.files,
+                              label: "تصویر صفحه دوم شناسنامه",
+                              order: 2,
+                              fieldname: "birth_certificate_second_page",
+                            };
+
+                            field.onChange(wrappedFile);
+
+                            if (bcspUrl) {
+                              URL.revokeObjectURL(bcspUrl);
+                            }
 
                             if (file) {
                               const objectUrl = URL.createObjectURL(file);
                               setBcspUrl(objectUrl);
+                            } else {
+                              setBcspUrl(null);
                             }
                           }}
                         />
@@ -424,7 +455,7 @@ export default function DocumentUpload() {
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 5 مگابایت
+                    حداکثر حجم 3 مگابایت
                   </Typography>
                 </Box>
 
@@ -446,13 +477,26 @@ export default function DocumentUpload() {
                           type="file"
                           multiple
                           onChange={(e) => {
-                            field.onChange(e.target.files);
-
                             const file = e.target.files?.[0];
+
+                            const wrappedFile = {
+                              file: e.target.files,
+                              label: "تصویر جلوی کارت ملی",
+                              order: 3,
+                              fieldname: "national_card_front",
+                            };
+
+                            field.onChange(wrappedFile);
+
+                            if (ncfUrl) {
+                              URL.revokeObjectURL(ncfUrl);
+                            }
 
                             if (file) {
                               const objectUrl = URL.createObjectURL(file);
                               setNcfUrl(objectUrl);
+                            } else {
+                              setNcfUrl(null);
                             }
                           }}
                         />
@@ -523,7 +567,7 @@ export default function DocumentUpload() {
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 5 مگابایت
+                    حداکثر حجم 3 مگابایت
                   </Typography>
                 </Box>
 
@@ -545,13 +589,26 @@ export default function DocumentUpload() {
                           type="file"
                           multiple
                           onChange={(e) => {
-                            field.onChange(e.target.files);
-
                             const file = e.target.files?.[0];
+
+                            const wrappedFile = {
+                              file: e.target.files,
+                              label: "تصویر پشت کارت ملی",
+                              order: 4,
+                              fieldname: "national_card_back",
+                            };
+
+                            field.onChange(wrappedFile);
+
+                            if (ncbUrl) {
+                              URL.revokeObjectURL(ncbUrl);
+                            }
 
                             if (file) {
                               const objectUrl = URL.createObjectURL(file);
                               setNcbUrl(objectUrl);
+                            } else {
+                              setNcbUrl(null);
                             }
                           }}
                         />
@@ -564,238 +621,6 @@ export default function DocumentUpload() {
             {typeof errors.national_card_back?.message === "string" && (
               <Typography color="error" variant="caption">
                 {errors.national_card_back.message}
-              </Typography>
-            )}
-          </Box>
-        </div>
-      </Box>
-
-      <Box sx={{ mb: 2 }}>
-        <Typography component={"h2"} sx={{ fontSize: 23 }}>
-          گواهی شغلی
-        </Typography>
-
-        <div className="grid sm:grid-cols-2 gap-3 ">
-          <Box>
-            <Card
-              variant="outlined"
-              sx={{
-                padding: 1.2,
-                borderColor: errors.job_certificate && red[500],
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  height: "100%",
-                }}
-              >
-                <div className="bg-slate-300 flex justify-center rounded-md mb-3 h-[250px]">
-                  <Image
-                    src={jcUrl || blankDocumentImage.src}
-                    alt="تصویر گواهی شغلی"
-                    width={250}
-                    height={250}
-                  />
-                </div>
-                <Typography
-                  component={"h3"}
-                  sx={{ fontSize: 18, textAlign: "center", mb: 2 }}
-                >
-                  گواهی شغلی
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <Typography
-                    component={"h3"}
-                    sx={{
-                      fontSize: 12,
-                      textAlign: "center",
-                      color: "gray",
-                    }}
-                  >
-                    فرمت قابل قبول: png, jpeg
-                  </Typography>
-                  <Typography
-                    component={"h3"}
-                    sx={{
-                      fontSize: 12,
-                      textAlign: "center",
-                      color: "gray",
-                    }}
-                  >
-                    حداکثر حجم 5 مگابایت
-                  </Typography>
-                </Box>
-
-                <Controller
-                  name="job_certificate"
-                  control={control}
-                  render={({ field }) => (
-                    <>
-                      <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        fullWidth
-                        startIcon={<LuCloudUpload />}
-                      >
-                        بارگزاری
-                        <VisuallyHiddenInput
-                          type="file"
-                          multiple
-                          onChange={(e) => {
-                            field.onChange(e.target.files);
-
-                            const file = e.target.files?.[0];
-
-                            if (file) {
-                              const objectUrl = URL.createObjectURL(file);
-                              setJcUrl(objectUrl);
-                            }
-                          }}
-                        />
-                      </Button>
-                    </>
-                  )}
-                />
-              </Box>
-            </Card>
-            {typeof errors.job_certificate?.message === "string" && (
-              <Typography color="error" variant="caption">
-                {errors.job_certificate.message}
-              </Typography>
-            )}
-          </Box>
-        </div>
-      </Box>
-
-      <Box sx={{ mb: 2 }}>
-        <Typography component={"h2"} sx={{ fontSize: 23 }}>
-          رتبه اعتباری
-        </Typography>
-
-        <div className="grid sm:grid-cols-2 gap-3 ">
-          <Box>
-            <Card
-              variant="outlined"
-              sx={{
-                padding: 1.2,
-                borderColor: errors.credit_score && red[500],
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  height: "100%",
-                }}
-              >
-                <div className="bg-slate-300 flex justify-center rounded-md mb-3 h-[250px]">
-                  {!csPDF && (
-                    <div className="flex items-center justify-center h-full">
-                      <FaFilePdf className="text-gray-200 text-8xl" />
-                    </div>
-                  )}
-
-                  {csPDF && (
-                    <iframe
-                      src={csPDF}
-                      width="90%"
-                      style={{
-                        border: "1px solid #ccc",
-                        borderRadius: "8px",
-                        marginTop: 10,
-                      }}
-                    />
-                  )}
-                </div>
-                <Typography
-                  component={"h3"}
-                  sx={{ fontSize: 14, textAlign: "center", mb: 2 }}
-                >
-                  فایل پی دی افی که از سامانه اعتبارسنجی دریافت کرده اید.
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  <Typography
-                    component={"h3"}
-                    sx={{
-                      fontSize: 12,
-                      textAlign: "center",
-                      color: "gray",
-                    }}
-                  >
-                    فرمت قابل قبول: pdf
-                  </Typography>
-                  <Typography
-                    component={"h3"}
-                    sx={{
-                      fontSize: 12,
-                      textAlign: "center",
-                      color: "gray",
-                    }}
-                  >
-                    حداکثر حجم 5 مگابایت
-                  </Typography>
-                </Box>
-
-                <Controller
-                  name="credit_score"
-                  control={control}
-                  render={({ field }) => (
-                    <>
-                      <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        tabIndex={-1}
-                        fullWidth
-                        startIcon={<LuCloudUpload />}
-                      >
-                        بارگزاری
-                        <VisuallyHiddenInput
-                          type="file"
-                          multiple
-                          onChange={(e) => {
-                            field.onChange(e.target.files);
-
-                            const file = e.target.files?.[0];
-
-                            if (file && file.type !== "application/pdf") {
-                              setCsPDF(null);
-                              return;
-                            }
-
-                            if (file) {
-                              const objectUrl = URL.createObjectURL(file);
-                              setCsPDF(objectUrl);
-                            }
-                          }}
-                        />
-                      </Button>
-                    </>
-                  )}
-                />
-              </Box>
-            </Card>
-            {typeof errors.credit_score?.message === "string" && (
-              <Typography color="error" variant="caption">
-                {errors.credit_score.message}
               </Typography>
             )}
           </Box>

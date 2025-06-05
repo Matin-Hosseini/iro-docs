@@ -9,7 +9,6 @@ const authMiddleware = async (req, res, next) => {
     return res.status(400).json({ msg: "no auth header provided" });
 
   const token = authHeader.split(" ")[1];
-  console.log(token);
 
   if (!token) return res.status(401).json({ msg: "token is not provided" });
 

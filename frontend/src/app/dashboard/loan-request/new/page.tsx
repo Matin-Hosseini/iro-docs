@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import SectionContainer from "../../components/SectionContainer";
 import UserInformationForm from "../../components/userInfoForm";
 import DocumentUpload from "../../components/DocumentUpload";
-import CalculatorForm from "@/components/CalculatorForm";
 
 import Typography from "@mui/material/Typography";
 import Alert from "@mui/material/Alert";
-import { grey } from "@mui/material/colors";
+import IdentityDocuments from "./components/identityDocuments";
+import StepperTest from "@/components/stepper";
 
 export default async function NewLoanRequestPage() {
   const { isSuccess, userInfo } = await getMe();
@@ -16,6 +16,10 @@ export default async function NewLoanRequestPage() {
 
   return (
     <div>
+      <SectionContainer className="mb-3">
+        <StepperTest />
+      </SectionContainer>
+
       <SectionContainer className="mb-3">
         <Alert>
           <Typography component={"p"}>
@@ -30,24 +34,9 @@ export default async function NewLoanRequestPage() {
 
       <SectionContainer className="mb-3">
         <Typography component={"p"} sx={{ fontSize: 24 }}>
-          تسهیلات شما
+          بارگزاری مدارک هویتی
         </Typography>
-      </SectionContainer>
-
-      <SectionContainer className="mb-3">
-        <Typography component={"p"} sx={{ fontSize: 24 }}>
-          محاسبه گر اقساط
-        </Typography>
-
-        <Typography
-          component={"p"}
-          sx={{ fontSize: 15, mb: 2, color: grey[600] }}
-        >
-          از شرایط و نحوه پرداخت متنوع اقساط خود مطلع شوید.
-        </Typography>
-
-        <Typography component={"p"}></Typography>
-        <CalculatorForm />
+        <IdentityDocuments />
       </SectionContainer>
 
       <SectionContainer className="mb-3">
