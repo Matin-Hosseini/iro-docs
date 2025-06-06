@@ -62,7 +62,7 @@ export default function StepperTest() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Stepper activeStep={activeStep} orientation="horizontal">
+      <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => {
           const stepProps: { completed?: boolean } = {};
           const labelProps: {
@@ -111,8 +111,8 @@ export default function StepperTest() {
                 Skip
               </Button>
             )}
-            <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
+            <Button variant="contained" onClick={handleNext}>
+              {activeStep === steps.length - 1 ? "اتمام" : "مرحله بعد"}
             </Button>
           </Box>
         </React.Fragment>

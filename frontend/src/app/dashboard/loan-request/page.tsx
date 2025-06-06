@@ -43,11 +43,11 @@ export default async function DashboardPage() {
               padding: "4rem 0",
             }}
           >
-            <IoSadOutline className="text-5xl mb-3"/>
+            <IoSadOutline className="text-5xl mb-3" />
             <Typography>شما هیچ تسهیلاتی درخواست نداده اید.</Typography>
           </Box>
         </Box>
-        <Link href={"/dashboard/loan-request/new"}>
+        <Link href={"/dashboard/loan-request/new/personal-info"}>
           <Button variant="contained" fullWidth startIcon={<IoIosAdd />}>
             درخواست جدید تسهیلات خرید کالا
           </Button>

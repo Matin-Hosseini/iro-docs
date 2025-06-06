@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa">
+    <html lang="fa" dir="rtl">
       <body className={`${danaFont.className} ${danaFont.variable}`}>
         <Providers>{children}</Providers>
       </body>

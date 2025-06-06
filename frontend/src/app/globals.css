@@ -4,3 +4,7 @@
 @theme {
   --font-dana: var(--dana-font);
 }
+
+.MuiPickersToolbar-root {
+  display: none !important;
+}

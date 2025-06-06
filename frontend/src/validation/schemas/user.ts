@@ -5,6 +5,8 @@ import {
   postalCodeRegex,
 } from "../regexes";
 
+import dayjs from "dayjs";
+
 export const userInfoFormSchema = z.object({
   firstName: z
     .string()
@@ -18,6 +20,22 @@ export const userInfoFormSchema = z.object({
     .string()
     .min(1, "کد ملی خود را وارد کنید.")
     .regex(nationalIDRegex, "کد ملی نا معتبر می باشد."),
+  birth_date: z
+    .custom(
+      (val) =>
+        val &&
+        dayjs(val).isValid() &&
+        dayjs(val).isAfter(
+          dayjs("Mon Mar 21 1921 19:18:14 GMT+0325 (Iran Standard Time)")
+        ),
+
+      {
+        message: "تاریخ معتبر وارد کنید",
+      }
+    )
+    .refine((val: any) => val && dayjs(val).isBefore(dayjs()), {
+      message: "تاریخ تولد نمی تواند بعد از امروز باشد",
+    }),
   fathers_name: z
     .string()
     .min(1, "نام پدر خود را وارد کنید.")

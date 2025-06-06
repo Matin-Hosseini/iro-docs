@@ -16,6 +16,19 @@ import { useState } from "react";
 import { updateUserInfoAction } from "@/actions/user";
 import { toast } from "sonner";
 
+import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
+import "dayjs/locale/fa";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+
+import dayjs from "dayjs";
+
+import { faIR } from "@mui/x-date-pickers/locales";
+import { useRouter } from "next/navigation";
+
 export default function UserInformationForm({
   defaultValues,
 }: {
@@ -23,12 +36,17 @@ export default function UserInformationForm({
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  const router = useRouter();
+
   const {
     register,
     control,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm({ resolver: zodResolver(userInfoFormSchema), defaultValues });
+  } = useForm({
+    resolver: zodResolver(userInfoFormSchema),
+    defaultValues: { ...defaultValues },
+  });
 
   const userInfoSubmitHandler = async (data: userInfoDTO) => {
     const result = await updateUserInfoAction(data);
@@ -37,7 +55,8 @@ export default function UserInformationForm({
       return toast.error(result.msg);
     }
 
-    toast.success(result.msg);
+    toast.success("اطلاعات شما ثبت شد.");
+    router.push("/dashboard/loan-request/new/identity-documents");
   };
 
   return (
@@ -66,6 +85,37 @@ export default function UserInformationForm({
           fullWidth
           helperText={!!errors.national_id && errors.national_id.message}
         />
+
+        <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
+          <Controller
+            name="birth_date"
+            control={control}
+            render={({ field, fieldState }) => (
+              <DatePicker
+                label="تاریخ تولد"
+                sx={{
+                  ".MuiPickersSectionList-root": {
+                    justifyContent: "flex-end",
+                  },
+                }}
+                localeText={{
+                  ...faIR.components.MuiLocalizationProvider.defaultProps
+                    .localeText,
+                  okButtonLabel: "ثبت",
+                }}
+                slotProps={{
+                  textField: {
+                    error: !!fieldState.error,
+                    helperText: fieldState.error?.message,
+                  },
+                }}
+                defaultValue={dayjs(String(field.value)).toDate() || null}
+                onAccept={field.onChange}
+              />
+            )}
+          />
+        </LocalizationProvider>
+
         <TextField
           error={!!errors.fathers_name}
           {...register("fathers_name")}
@@ -74,7 +124,7 @@ export default function UserInformationForm({
           helperText={!!errors.fathers_name && errors.fathers_name.message}
         />
 
-        <TextField
+        {/* <TextField
           error={!!errors.requested_product}
           {...register("requested_product")}
           label="کالای درخواستی"
@@ -82,7 +132,7 @@ export default function UserInformationForm({
           helperText={
             !!errors.requested_product && errors.requested_product.message
           }
-        />
+        /> */}
         <TextField
           error={!!errors.postal_code}
           {...register("postal_code")}
@@ -99,7 +149,7 @@ export default function UserInformationForm({
           helperText={!!errors.address && errors.address.message}
         />
 
-        <Controller
+        {/* <Controller
           name="grade_score"
           control={control}
           render={({ field }) => (
@@ -146,9 +196,9 @@ export default function UserInformationForm({
               </FormHelperText>
             </FormControl>
           )}
-        />
+        /> */}
       </div>
-      <SubmitBtn isSubmitting={isSubmitting}>تکمیل اطلاعات</SubmitBtn>
+      <SubmitBtn isSubmitting={isSubmitting}>ثبت و ادامه</SubmitBtn>
     </form>
   );
 }
