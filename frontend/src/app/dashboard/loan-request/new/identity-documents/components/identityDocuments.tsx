@@ -21,10 +21,10 @@ import api from "@/lib/axios";
 import { toast } from "sonner";
 
 import VisuallyHiddenInput from "@/components/VisuallyHiddenInput";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 
-const threeMB = 1 * 1024 * 1024;
+const twoMB = 2 * 1024 * 1024;
 
 const schema = z.object({
   birth_certificate_first_page: z
@@ -45,7 +45,7 @@ const schema = z.object({
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.file[0]?.size > threeMB), {
+    .refine((fileList) => !(fileList?.file[0]?.size > twoMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
   birth_certificate_second_page: z
@@ -66,7 +66,7 @@ const schema = z.object({
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.file?.[0]?.size > threeMB), {
+    .refine((fileList) => !(fileList?.file?.[0]?.size > twoMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
   national_card_front: z
@@ -87,7 +87,7 @@ const schema = z.object({
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.file?.[0]?.size > threeMB), {
+    .refine((fileList) => !(fileList?.file?.[0]?.size > twoMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
   national_card_back: z
@@ -108,7 +108,7 @@ const schema = z.object({
         message: "فرمت فایل معتبر نمی باشد.",
       }
     )
-    .refine((fileList) => !(fileList?.file?.[0]?.size > threeMB), {
+    .refine((fileList) => !(fileList?.file?.[0]?.size > twoMB), {
       message: "حجم فایل از حد مجاز بیشتر است.",
     }),
 });
@@ -127,6 +127,8 @@ export default function IdentityDocumentsUpload({
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema) });
 
+  const router = useRouter();
+
   const submitHandler = async (data: any) => {
     const formData = new FormData();
 
@@ -144,15 +146,21 @@ export default function IdentityDocumentsUpload({
 
     try {
       const res = await api.post("/api/user/identity-documents", formData);
+      console.log("submitted", res);
 
       toast.success(res.data);
+
+      router.replace("/dashboard/loan-request/new/product-request");
     } catch (error: any) {
       if (error.status === 401) {
         toast.error(error.response.data);
-        redirect("/");
       }
 
-      toast.error(error.response.data);
+      if (error) {
+        console.log(error);
+        toast.error(error.response.data);
+      }
+      // revalidatePath("/dashboard/loan-request/new/identity-documents");
     }
   };
 
@@ -261,7 +269,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    فرمت قابل قبول: png, jpeg
+                    فرمت قابل قبول: png, jpeg, webp
                   </Typography>
                   <Typography
                     component={"h3"}
@@ -271,7 +279,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 3 مگابایت
+                    حداکثر حجم 2 مگابایت
                   </Typography>
                 </Box>
 
@@ -350,17 +358,19 @@ export default function IdentityDocumentsUpload({
               </Typography>
             )}
 
-            {documents?.find(
-              (item: any) => item.type === "birth_certificate_first_page"
-            ).status === "rejected" && (
-              <Typography variant="caption" color="error">
-                {
-                  documents?.find(
-                    (item: any) => item.type === "birth_certificate_first_page"
-                  )?.rejectionReason
-                }
-              </Typography>
-            )}
+            {!!documents.length &&
+              documents?.find(
+                (item: any) => item.type === "birth_certificate_first_page"
+              )?.status === "rejected" && (
+                <Typography variant="caption" color="error">
+                  {
+                    documents?.find(
+                      (item: any) =>
+                        item.type === "birth_certificate_first_page"
+                    )?.rejectionReason
+                  }
+                </Typography>
+              )}
           </Box>
           <Box>
             <Card
@@ -422,7 +432,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    فرمت قابل قبول: png, jpeg
+                    فرمت قابل قبول: png, jpeg, webp
                   </Typography>
                   <Typography
                     component={"h3"}
@@ -432,7 +442,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 3 مگابایت
+                    حداکثر حجم 2 مگابایت
                   </Typography>
                 </Box>
 
@@ -510,17 +520,19 @@ export default function IdentityDocumentsUpload({
                 {errors.birth_certificate_second_page.message}
               </Typography>
             )}
-            {documents?.find(
-              (item: any) => item.type === "birth_certificate_second_page"
-            ).status === "rejected" && (
-              <Typography variant="caption" color="error">
-                {
-                  documents?.find(
-                    (item: any) => item.type === "birth_certificate_second_page"
-                  )?.rejectionReason
-                }
-              </Typography>
-            )}
+            {!!documents.length &&
+              documents?.find(
+                (item: any) => item.type === "birth_certificate_second_page"
+              ).status === "rejected" && (
+                <Typography variant="caption" color="error">
+                  {
+                    documents?.find(
+                      (item: any) =>
+                        item.type === "birth_certificate_second_page"
+                    )?.rejectionReason
+                  }
+                </Typography>
+              )}
           </Box>
         </div>
       </Box>
@@ -589,7 +601,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    فرمت قابل قبول: png, jpeg
+                    فرمت قابل قبول: png, jpeg, webp
                   </Typography>
                   <Typography
                     component={"h3"}
@@ -599,7 +611,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 3 مگابایت
+                    حداکثر حجم 2 مگابایت
                   </Typography>
                 </Box>
 
@@ -674,16 +686,18 @@ export default function IdentityDocumentsUpload({
                 {errors.national_card_front.message}
               </Typography>
             )}
-            {documents?.find((item: any) => item.type === "national_card_front")
-              .status === "rejected" && (
-              <Typography variant="caption" color="error">
-                {
-                  documents?.find(
-                    (item: any) => item.type === "national_card_front"
-                  )?.rejectionReason
-                }
-              </Typography>
-            )}
+            {!!documents.length &&
+              documents?.find(
+                (item: any) => item.type === "national_card_front"
+              ).status === "rejected" && (
+                <Typography variant="caption" color="error">
+                  {
+                    documents?.find(
+                      (item: any) => item.type === "national_card_front"
+                    )?.rejectionReason
+                  }
+                </Typography>
+              )}
           </Box>
           <Box>
             <Card
@@ -743,7 +757,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    فرمت قابل قبول: png, jpeg
+                    فرمت قابل قبول: png, jpeg, webp
                   </Typography>
                   <Typography
                     component={"h3"}
@@ -753,7 +767,7 @@ export default function IdentityDocumentsUpload({
                       color: "gray",
                     }}
                   >
-                    حداکثر حجم 3 مگابایت
+                    حداکثر حجم 2 مگابایت
                   </Typography>
                 </Box>
 
@@ -828,16 +842,17 @@ export default function IdentityDocumentsUpload({
                 {errors.national_card_back.message}
               </Typography>
             )}
-            {documents?.find((item: any) => item.type === "national_card_back")
-              .status === "rejected" && (
-              <Typography variant="caption" color="error">
-                {
-                  documents?.find(
-                    (item: any) => item.type === "national_card_back"
-                  )?.rejectionReason
-                }
-              </Typography>
-            )}
+            {!!documents.length &&
+              documents?.find((item: any) => item.type === "national_card_back")
+                .status === "rejected" && (
+                <Typography variant="caption" color="error">
+                  {
+                    documents?.find(
+                      (item: any) => item.type === "national_card_back"
+                    )?.rejectionReason
+                  }
+                </Typography>
+              )}
           </Box>
         </div>
       </Box>

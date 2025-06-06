@@ -10,7 +10,7 @@ import IdentityDocuments from "./identity-documents/components/identityDocuments
 import StepperTest from "@/components/stepper";
 import api from "@/lib/axios";
 import { cookies } from "next/headers";
-import LoanRequestedProduct from "./components/RequestdProduct";
+import LoanRequestedProduct from "./product-request/components/RequestdProduct";
 
 export default async function NewLoanRequestPage() {
   const { isSuccess, userInfo } = await getMe();
@@ -21,17 +21,17 @@ export default async function NewLoanRequestPage() {
 
   const token = cookiestore.get("auth_token")?.value || null;
 
-  try {
-    const res = await api.get("/user/identity-documents", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  // try {
+  //   const res = await api.get("/user/identity-documents", {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
 
-    console.log(res.data);
-  } catch (error: any) {
-    console.log(error);
-  }
+  //   console.log(res.data);
+  // } catch (error: any) {
+  //   console.log(error);
+  // }
 
   return (
     <div>
@@ -61,12 +61,12 @@ export default async function NewLoanRequestPage() {
       </SectionContainer>
 
       <SectionContainer>
-        <SectionContainer className="mb-3">
+        {/* <SectionContainer className="mb-3">
           <Typography component={"p"} sx={{ fontSize: 24 }}>
             بارگزاری مدارک هویتی
           </Typography>
           <IdentityDocuments />
-        </SectionContainer>
+        </SectionContainer> */}
 
         <p className="text-2xl mb-6">بارگزاری مدارک:</p>
         <DocumentUpload />

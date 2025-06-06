@@ -34,16 +34,6 @@ const UserSchema = new Schema(
       default: "",
       trim: true,
     },
-    requested_product: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-    grade_score: {
-      type: String,
-      default: "",
-      enum: ["A", "B", "C", "D", "E", ""],
-    },
     postal_code: {
       type: String,
       default: "",

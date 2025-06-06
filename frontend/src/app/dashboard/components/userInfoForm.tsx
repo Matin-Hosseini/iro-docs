@@ -56,7 +56,7 @@ export default function UserInformationForm({
     }
 
     toast.success("اطلاعات شما ثبت شد.");
-    router.push("/dashboard/loan-request/new/identity-documents");
+    router.replace("/dashboard/loan-request/new/identity-documents");
   };
 
   return (
