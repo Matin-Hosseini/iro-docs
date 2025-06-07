@@ -10,11 +10,25 @@ import { IoIosAdd } from "react-icons/io";
 
 import { red } from "@mui/material/colors";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import api from "@/lib/axios";
 
 export default async function DashboardPage() {
   const { isSuccess, userInfo } = await getMe();
 
   if (!isSuccess) return redirect("/");
+
+  const cookieStore = await cookies();
+
+  const authToken = cookieStore.get("auth_token");
+
+  try {
+    const res = await api.get("/loan/request/all", {
+      headers: { Authorization: `Bearer ${authToken?.value}` },
+    });
+
+    console.log(res.data);
+  } catch (error) {}
 
   return (
     <div>

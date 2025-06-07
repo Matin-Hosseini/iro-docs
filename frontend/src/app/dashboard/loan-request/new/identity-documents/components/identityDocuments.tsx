@@ -118,8 +118,6 @@ export default function IdentityDocumentsUpload({
 }: {
   documents: any;
 }) {
-  console.log(documents);
-
   const {
     handleSubmit,
 
@@ -153,6 +151,7 @@ export default function IdentityDocumentsUpload({
       router.replace("/dashboard/loan-request/new/product-request");
     } catch (error: any) {
       if (error.status === 401) {
+        
         toast.error(error.response.data);
       }
 

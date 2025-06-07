@@ -34,7 +34,7 @@ export default function UserInformationForm({
 }: {
   defaultValues: userInfoDTO;
 }) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  
 
   const router = useRouter();
 
