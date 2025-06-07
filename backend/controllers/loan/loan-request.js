@@ -8,8 +8,6 @@ const newLoanRequest = async (req, res) => {
     product_name: req.body.product_name,
   });
 
-  console.log(newLoanRequest);
-
   res
     .status(200)
     .json({ msg: "درخواست تسهیلات ایجاد شد.", req_id: newLoanRequest._id });

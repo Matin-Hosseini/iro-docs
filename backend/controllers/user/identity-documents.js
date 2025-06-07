@@ -1,41 +1,6 @@
+const { getFilesFromBucket } = require("../../utils/funcs/bucket/download");
+const { uploadFileToBucket } = require("../../utils/funcs/bucket/upload");
 const IdentityDocment = require("./../../models/user/identity-document");
-
-const s3Client = require("./../../utils/s3");
-
-const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-
-const uploadFileToBucket = async (file, folder = "uploads") => {
-  const params = {
-    Body: file.buffer,
-    Bucket: process.env.LIARA_BUCKET_NAME,
-    Key: `${folder}/${Date.now()}-${file.fieldname}.${
-      file.originalname.split(".")[1]
-    }`,
-  };
-
-  try {
-    const res = await s3Client.send(new PutObjectCommand(params));
-
-    console.log(res);
-
-    return { success: true, fileKey: params.Key };
-  } catch (error) {
-    return { success: false };
-  }
-};
-
-const getFilesFromBucket = async (fileKey) => {
-  const params = {
-    Bucket: process.env.LIARA_BUCKET_NAME,
-    Key: fileKey,
-  };
-
-  const command = new GetObjectCommand(params);
-  const fileLink = await getSignedUrl(s3Client, command);
-
-  return { fileLink };
-};
 
 const uploadIdentityDocuments = async (req, res) => {
   const { body, files } = req;

@@ -16,8 +16,13 @@ const LoanRequest = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ["pending", "approved", "rejected", "creating"],
+      default: "creating",
+    },
+    grade_score: {
+      type: String,
+      enum: ["A", "B", "C", "D", "E", ""],
+      default: "",
     },
     rejectionReason: {
       type: String,
