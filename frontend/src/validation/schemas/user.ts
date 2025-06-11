@@ -40,7 +40,7 @@ export const userInfoFormSchema = z.object({
     .string()
     .min(1, "نام پدر خود را وارد کنید.")
     .regex(onlyEnglishWordsRegex, "از عبارات فارسی استفاده کنید."),
-  requested_product: z.string().min(1, "نام محصول درخواستی خود را وارد کنید."),
+  // requested_product: z.string().min(1, "نام محصول درخواستی خود را وارد کنید."),
   postal_code: z
     .string()
     .min(1, "کد پستی را وارد کنید.")
@@ -49,5 +49,5 @@ export const userInfoFormSchema = z.object({
     .string()
     .min(1, "آدرس محل سکونت خود را وارد کنید.")
     .regex(onlyEnglishWordsRegex, "از عبارات فارسی استفاده کنید."),
-  grade_score: z.string().min(1, "رتبه اعتباری خود را انتخاب کنید."),
+  // grade_score: z.string().min(1, "رتبه اعتباری خود را انتخاب کنید."),
 });

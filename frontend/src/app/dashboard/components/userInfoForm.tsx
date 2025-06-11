@@ -34,8 +34,6 @@ export default function UserInformationForm({
 }: {
   defaultValues: userInfoDTO;
 }) {
-  
-
   const router = useRouter();
 
   const {
@@ -49,6 +47,7 @@ export default function UserInformationForm({
   });
 
   const userInfoSubmitHandler = async (data: userInfoDTO) => {
+    console.log("submitting");
     const result = await updateUserInfoAction(data);
 
     if (!result?.isSuccess) {

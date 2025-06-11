@@ -14,9 +14,13 @@ const LoanRequest = new Schema(
       required: true,
       trim: true,
     },
+    tracking_code: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected", "creating"],
+      enum: ["pending", "approved", "rejected", "creating", "canceled"],
       default: "creating",
     },
     grade_score: {

@@ -1,6 +1,7 @@
 const s3Client = require("./../../s3");
 
 const { GetObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const getFilesFromBucket = async (fileKey) => {
   const params = {

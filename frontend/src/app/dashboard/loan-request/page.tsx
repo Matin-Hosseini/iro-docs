@@ -12,6 +12,7 @@ import { red } from "@mui/material/colors";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import api from "@/lib/axios";
+import LoanRequestTable from "./components/LoanRequestTable";
 
 export default async function DashboardPage() {
   const { isSuccess, userInfo } = await getMe();
@@ -22,13 +23,22 @@ export default async function DashboardPage() {
 
   const authToken = cookieStore.get("auth_token");
 
-  try {
-    const res = await api.get("/loan/request/all", {
-      headers: { Authorization: `Bearer ${authToken?.value}` },
-    });
+  const getUserLoanRequests = async () => {
+    try {
+      const res = await api.get("/loan/request/all", {
+        headers: { Authorization: `Bearer ${authToken?.value}` },
+      });
 
-    console.log(res.data);
-  } catch (error) {}
+      return { isSuccess: true, requestedLoans: res.data.requestedLoans };
+    } catch (error) {
+      return { isSuccess: false };
+    }
+  };
+
+  const { isSuccess: reqLoansSuccess, requestedLoans } =
+    await getUserLoanRequests();
+
+  if (!reqLoansSuccess) return redirect("/");
 
   return (
     <div>
@@ -37,32 +47,42 @@ export default async function DashboardPage() {
           تسهیلات درخواستی شما
         </Typography>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            border: "1px dashed",
-            borderColor: red[500],
-            color: red[500],
-            mb: 2,
-          }}
-        >
+        {!!requestedLoans.length ? (
+          <LoanRequestTable requestedLoans={requestedLoans} />
+        ) : (
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              padding: "4rem 0",
+              border: "1px dashed",
+              borderColor: red[500],
+              color: red[500],
+              mb: 2,
             }}
           >
-            <IoSadOutline className="text-5xl mb-3" />
-            <Typography>شما هیچ تسهیلاتی درخواست نداده اید.</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "4rem 0",
+              }}
+            >
+              <IoSadOutline className="text-5xl mb-3" />
+              <Typography>شما هیچ تسهیلاتی درخواست نداده اید.</Typography>
+            </Box>
           </Box>
-        </Box>
+        )}
+
         <Link href={"/dashboard/loan-request/new/personal-info"}>
-          <Button variant="contained" fullWidth startIcon={<IoIosAdd />}>
+          <Button
+            variant="contained"
+            fullWidth
+            startIcon={<IoIosAdd />}
+            sx={{ py: 1 }}
+          >
             درخواست جدید تسهیلات خرید کالا
           </Button>
         </Link>

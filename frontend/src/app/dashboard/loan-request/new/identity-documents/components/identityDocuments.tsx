@@ -383,7 +383,7 @@ export default function IdentityDocumentsUpload({
                           item.type === "birth_certificate_second_page"
                       ).status
                     )
-                  : errors.birth_certificate_first_page && red[500],
+                  : errors.birth_certificate_second_page && red[500],
               }}
             >
               <Box
@@ -553,7 +553,7 @@ export default function IdentityDocumentsUpload({
                         (item: any) => item.type === "national_card_front"
                       ).status
                     )
-                  : errors.birth_certificate_first_page && red[500],
+                  : errors.national_card_front && red[500],
               }}
             >
               <Box
@@ -709,7 +709,7 @@ export default function IdentityDocumentsUpload({
                         (item: any) => item.type === "national_card_back"
                       ).status
                     )
-                  : errors.birth_certificate_first_page && red[500],
+                  : errors.national_card_back && red[500],
               }}
             >
               <Box

@@ -161,7 +161,7 @@ export default function LoanDocumentUpload({ req_id }: { req_id: string }) {
 
       toast.success(res.data);
 
-      // router.replace("/dashboard/loan-request/new/product-request");
+      router.replace("/dashboard/loan-request");
     } catch (error: any) {
       if (error.status === 401) {
         toast.error(error.response.data);

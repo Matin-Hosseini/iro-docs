@@ -6,7 +6,7 @@ const uploadLoanDocuments = async (req, res) => {
   const { body, files, user } = req;
 
   const targetLoanRequest = await LoanRequestModel.findOne({
-    _id: body.req_id,
+    tracking_code: body.req_id,
   });
 
   if (!targetLoanRequest)
