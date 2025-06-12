@@ -1,6 +1,5 @@
 const { uploadFileToBucket } = require("../../utils/funcs/bucket/upload");
 const LoanRequestModel = require("./../../models/loan/loan-request");
-const LoanDocumentModel = require("./../../models/loan/loan-document");
 
 const uploadLoanDocuments = async (req, res) => {
   const { body, files, user } = req;

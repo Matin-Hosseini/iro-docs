@@ -14,7 +14,7 @@ import { Chip, IconButton } from "@mui/material";
 import { getDate } from "@/utils/funcs/date/date";
 
 const columns: GridColDef<(typeof rows)[number]>[] = [
-  { field: "tracking_code", headerName: "کد پیگیری", width: 200 },
+  { field: "tracking_code", headerName: "کد پیگیری", width: 110 },
   { field: "product_name", headerName: "کالای درخواستی", width: 200 },
   {
     field: "createdAt",
@@ -23,7 +23,7 @@ const columns: GridColDef<(typeof rows)[number]>[] = [
     renderCell: ({ row }) => {
       return <>{getDate(new Date(row.createdAt)).getCompleteFormat()}</>;
     },
-    width: 250,
+    width: 130,
   },
   {
     field: "status",
@@ -43,7 +43,7 @@ const columns: GridColDef<(typeof rows)[number]>[] = [
         </div>
       );
     },
-    width: 180,
+    width: 170,
   },
   {
     field: "actions",
@@ -63,7 +63,7 @@ const columns: GridColDef<(typeof rows)[number]>[] = [
         </div>
       );
     },
-    width: 180,
+    width: 80,
   },
 ];
 

@@ -112,6 +112,35 @@ const schema = z.object({
     }),
 });
 
+export const generateStatusColors = (status: string) => {
+  switch (status) {
+    case "pending":
+      return orange[700];
+
+    case "approved":
+      return green[500];
+
+    case "rejected":
+      return red[500];
+
+    default:
+      return grey[500];
+  }
+};
+
+export const generateStatusText = (status: string) => {
+  switch (status) {
+    case "pending":
+      return "در انتظار تایید";
+
+    case "approved":
+      return "تایید شده";
+
+    case "rejected":
+      return "رد شده";
+  }
+};
+
 export default function IdentityDocumentsUpload({
   documents,
 }: {
@@ -168,35 +197,6 @@ export default function IdentityDocumentsUpload({
   //national card front/back
   const [ncfUrl, setNcfUrl] = useState<string | null>(null);
   const [ncbUrl, setNcbUrl] = useState<string | null>(null);
-
-  const generateStatusColors = (status: string) => {
-    switch (status) {
-      case "pending":
-        return orange[700];
-
-      case "approved":
-        return green[500];
-
-      case "rejected":
-        return red[500];
-
-      default:
-        return grey[500];
-    }
-  };
-
-  const generateStatusText = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "در انتظار تایید";
-
-      case "approved":
-        return "تایید شده";
-
-      case "rejected":
-        return "رد شده";
-    }
-  };
 
   return (
     <Box component={"form"} onSubmit={handleSubmit(submitHandler)}>

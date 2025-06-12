@@ -1,8 +1,8 @@
 const express = require("express");
-const { getUserLoanInfo } = require("../../controllers/loan/user-loan");
+const { getLoanInfo } = require("../../controllers/loan/info");
 
 const router = express.Router();
 
-router.post("/", getUserLoanInfo);
+router.get("/:tracking_code", getLoanInfo);
 
 module.exports = router;

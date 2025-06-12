@@ -12,9 +12,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "iro-docs.storage.c2.liara.space", // ← دامنه‌ای که عکس از آن لود می‌شود
-        port: "", // معمولاً خالی بگذار
-        pathname: "/**", // همه مسیرها
+        hostname: "iro-docs.storage.c2.liara.space",
+        port: "",
+        pathname: "/**",
       },
     ],
   },

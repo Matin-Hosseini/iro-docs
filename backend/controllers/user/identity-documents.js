@@ -68,4 +68,26 @@ const getIdentityDocuments = async (req, res) => {
   res.status(200).json({ msg: "ok", documents: sortedDocs });
 };
 
-module.exports = { uploadIdentityDocuments, getIdentityDocuments };
+const changeIdentityDocumentStatus = async (req, res) => {
+  const { params, body } = req;
+
+  console.log(params, body);
+
+  const targetDocument = await IdentityDocment.findOne({ _id: params.id });
+
+  if (!targetDocument) return res.status(404).json({ msg: "سند یافت نشد." });
+
+  targetDocument.status = body.status;
+
+  await targetDocument.save();
+
+  console.log(targetDocument);
+
+  return res.status(200).json({ msg: "تغییر اعمال شد." });
+};
+
+module.exports = {
+  uploadIdentityDocuments,
+  getIdentityDocuments,
+  changeIdentityDocumentStatus,
+};
