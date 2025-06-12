@@ -1,6 +1,6 @@
 import { getMe } from "@/utils/funcs/me";
 import { redirect } from "next/navigation";
-import SectionContainer from "../components/SectionContainer";
+import SectionContainer from "../../components/SectionContainer";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,7 +12,7 @@ import { red } from "@mui/material/colors";
 import Link from "next/link";
 import { cookies } from "next/headers";
 import api from "@/lib/axios";
-import LoanRequestTable from "./components/LoanRequestTable";
+import LoanRequestTable from "../../loan-request/components/LoanRequestTable";
 
 export default async function DashboardPage() {
   const { isSuccess, userInfo } = await getMe();
@@ -76,12 +76,12 @@ export default async function DashboardPage() {
           </Box>
         )}
 
-        <Link href={"/dashboard/loan-request/new/personal-info"}>
+        <Link href={"/dashboard/loan/request/new/personal-info"}>
           <Button
             variant="contained"
             fullWidth
             startIcon={<IoIosAdd />}
-            sx={{ py: 1 }}
+            sx={{ py: 1, mt: 2 }}
           >
             درخواست جدید تسهیلات خرید کالا
           </Button>

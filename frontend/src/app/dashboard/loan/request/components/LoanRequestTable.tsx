@@ -53,7 +53,7 @@ const columns: GridColDef<(typeof rows)[number]>[] = [
         <div className="flex items-center justify-center h-full">
           <IconButton>
             <Link
-              href={`/dashboard/loan/info/${row.tracking_code}`}
+              href={`/dashboard/loan-request/info/${row.tracking_code}`}
               className="flex items-center justify-center h-full"
               target="_blank"
             >

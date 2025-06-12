@@ -23,7 +23,7 @@ export default async function DashboardPage() {
           </Link>
           <Link
             className="bg-blue-600 py-6  w-[250px] text-center rounded-md text-white  whitespace-nowrap"
-            href={"/dashboard/loan-request"}
+            href={"/dashboard/loan/request"}
           >
             درخواست تسهیلات
           </Link>

@@ -1,5 +1,5 @@
 import { Alert } from "@mui/material";
-import SectionContainer from "../components/SectionContainer";
+import SectionContainer from "../../../components/SectionContainer";
 
 export default function LoanRequestLayout({
   children,

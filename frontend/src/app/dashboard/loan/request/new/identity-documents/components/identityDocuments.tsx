@@ -147,7 +147,7 @@ export default function IdentityDocumentsUpload({
 
       toast.success(res.data);
 
-      router.replace("/dashboard/loan-request/new/product-request");
+      router.replace("/dashboard/loan/request/new/product-request");
     } catch (error: any) {
       if (error.status === 401) {
         toast.error(error.response.data);
@@ -858,7 +858,7 @@ export default function IdentityDocumentsUpload({
         <Button variant="contained" fullWidth color="success">
           <Link
             className="block w-full h-full"
-            href={"/dashboard/loan-request/new/product-request"}
+            href={"/dashboard/loan/request/new/product-request"}
           >
             تایید و ادامه
           </Link>
