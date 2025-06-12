@@ -1,14 +1,15 @@
 import Box from "@mui/material/Box";
-import { deepOrange, green } from "@mui/material/colors";
+import { blue, deepOrange, green, grey, purple } from "@mui/material/colors";
 
 const InfoWrarpper = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
+        height: "100%",
         border: "1px solid ",
         borderRadius: 2,
         overflow: "hidden",
-        borderColor: green[400],
+        borderColor: blue[100],
         "&:not(:last-child)": { mb: 1 },
       }}
       component={"div"}
@@ -22,8 +23,8 @@ const InfoHeader = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
-        background: green[400],
-        color: "white",
+        background: blue[100],
+        color: blue[800],
         textAlign: "center",
         display: "flex",
         justifyContent: "center",
@@ -54,11 +55,11 @@ export default function InstallMentInfo({ info }: { info: any }) {
     <>
       {(info?.condition === "bank-loan-check-guarantee" ||
         info?.condition === "bank-loan-promissory-guarantee") && (
-        <>
+        <div className="grid xl:grid-cols-3 gap-3">
           <InfoWrarpper>
             <InfoHeader>مبلغ هر قسط</InfoHeader>
             <InfoContent>
-              <div className="flex items-center justify-around flex-wrap gap-2 text-sm md:text-lg ">
+              <div className="flex items-center justify-around flex-wrap gap-2 text-sm  ">
                 <p>{info.repayment} قسط مساوی به مبلغ</p>
                 <p>{info.monthlyPayment.toLocaleString()} تومان</p>
               </div>
@@ -67,7 +68,7 @@ export default function InstallMentInfo({ info }: { info: any }) {
           <InfoWrarpper>
             <InfoHeader>تاریخ و مبلغ چک {info.checkPeriod} ماهه</InfoHeader>
             <InfoContent>
-              <div className="flex items-center justify-around flex-wrap gap-2 text-sm md:text-lg ">
+              <div className="flex items-center justify-around flex-wrap gap-2 text-sm ">
                 <p>
                   یک فقره چک صیادی به تاریخ {info.companyCheckDate.day}/
                   {info.companyCheckDate.month}/ {info.companyCheckDate.year}
@@ -83,11 +84,11 @@ export default function InstallMentInfo({ info }: { info: any }) {
             <InfoHeader>ضمانت</InfoHeader>
             <InfoContent>
               {info.condition === "bank-loan-check-guarantee" && (
-                <div className="flex items-center justify-around flex-wrap gap-2 text-sm md:text-lg">
+                <div className="flex items-center justify-around flex-wrap gap-2 text-sm">
                   <p>
-                    چک صیادی به تاریخ {info.guaranteeCheckDate.day}/
+                    چک صیادی به تاریخ {info.guaranteeCheckDate.year}/
                     {info.guaranteeCheckDate.month}/
-                    {info.guaranteeCheckDate.year}
+                    {info.guaranteeCheckDate.day}
                   </p>
                   <p>
                     به مبلغ یک قسط معادل {info.guaranteePrice.toLocaleString()}{" "}
@@ -97,17 +98,17 @@ export default function InstallMentInfo({ info }: { info: any }) {
               )}
 
               {info.condition === "bank-loan-promissory-guarantee" && (
-                <div className="flex items-center justify-around flex-wrap gap-2 text-sm md:text-lg">
+                <div className="flex items-center justify-around flex-wrap gap-2 text-sm">
                   سفته به مبلغ {info.guaranteePrice.toLocaleString()} تومان
                 </div>
               )}
             </InfoContent>
           </InfoWrarpper>
-        </>
+        </div>
       )}
 
       {info?.condition === "company" && (
-        <>
+        <div className="grid xl:grid-cols-3 gap-3">
           <InfoWrarpper>
             <InfoHeader>نحوه پرداخت اقساط</InfoHeader>
             <InfoContent>
@@ -117,7 +118,7 @@ export default function InstallMentInfo({ info }: { info: any }) {
               {info.installmentChecks.map((item: any) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-around flex-wrap gap-2 text-sm md:text-lg "
+                  className="flex items-center justify-around flex-wrap gap-2 text-sm "
                 >
                   <p>
                     تاریخ: {item.date.year}/{item.date.month}/{item.date.day}
@@ -131,7 +132,7 @@ export default function InstallMentInfo({ info }: { info: any }) {
           <InfoWrarpper>
             <InfoHeader>ضمانت</InfoHeader>
             <InfoContent>
-              <div className="flex items-center justify-around flex-wrap gap-2 text-sm md:text-lg">
+              <div className="flex items-center justify-around flex-wrap gap-2 text-sm">
                 <p>
                   چک صیادی به تاریخ {info.guaranteeCheckDate.day}/{" "}
                   {info.guaranteeCheckDate.month}/{" "}
@@ -144,7 +145,7 @@ export default function InstallMentInfo({ info }: { info: any }) {
               </div>
             </InfoContent>
           </InfoWrarpper>
-        </>
+        </div>
       )}
     </>
   );
