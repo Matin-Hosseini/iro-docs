@@ -61,13 +61,6 @@ const checkOtp = async (req, res) => {
   if (targetUser) {
     const token = generateToken({ _id: targetUser._id });
 
-    const userRole = await RoleModel.findOne({name: "user"})
-
-    await UserRoleModel.create({
-    user_id: newUser._id,
-    role_id: userRole._id,
-  });
-
     return res.status(200).json({ msg: "ok", user: targetUser, token });
   }
 
